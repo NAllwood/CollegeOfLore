@@ -1,0 +1,27 @@
+picture: Bild
+names: Namen
+last_name: Nachname
+description_info: Beschreibung
+age: Alter
+species: Spezies
+gener: Geschlecht
+height: Körpergröße
+alignment: Gesinnung
+class: Klasse
+biographical_info: Biographie
+title: Titel
+origin: Heimat
+epithet: Namenszusatz
+alias: Alias
+organizations: Organisationen
+status: Status
+place_of_death: Todesort
+items: Gegenstände
+family: Familie
+description: Beschreibung
+personality: Persönlichkeit
+relationships: Beziehungen
+activities: Aktivitäten
+history: Geschichte
+campagin_story: Innerhalb der Kampagne
+misc: Verschiedenes

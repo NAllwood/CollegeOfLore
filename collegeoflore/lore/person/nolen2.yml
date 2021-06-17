@@ -1,0 +1,52 @@
+  picture:
+  names:
+    - Nolen
+    - Constantin
+    - Lepidus
+  last_name: Silverbridge
+  infobox:
+    description_info:
+      age: 58
+      species: human
+      gener: male
+      height: 1.88m
+      alignment: LN
+      class: noble
+    biographical_info:
+      title: Kaiser
+      origin: Umaron
+      epithet: 
+        - II
+        - der Zweite
+        - dritter Kaiser von Umaron
+      alias: []
+      organizations: []
+      status: lebendig
+      place_of_death:
+    items: {}
+  family:
+    - Nolen1: Urgroßvater
+    - Tidus: Großvater
+    - Constantine: Vater
+    - Calista: Tochter
+    - Lucen: Sohn
+    - Agatha: Frau
+    - Selise: Frau
+  articles:
+    description: |
+      Nolen ist von großer Statur und strahlt aufgrund seiner allzeit korrekten Körperhaltung und seines makellos gepflegtem Äußerem eine an Arroganz grenzende Erhabenheit aus.
+      Auf sein Alter lassen nur wenige Falten und sein fliehender Haaransatz schleißen, aus welchem schulterlang nun mehr graue als hellblonde Strähnen sprießen.
+    personality: | 
+      Mutig im Angesicht seiner Feinde und entschlossen vor seinem Volk, aber von seinen Vertrauten überaus beeinflussbar.
+      Nolen ist bekannt für seinen unerschütterlichen Drang den Ruhm und Einfluss seiner Vorväter zu erreichen, in deren Schatten er sich gestellt fühlt.
+      Seinen Geltungsdrang konnte er in der Blüte seiner Jahre nicht befriedigen, weshalb er mit zunehmendem alter immer verbitterter und aktionistischer wurde. Er hat eine große Liebe zur Musik und zum Hören von fantastischen Geschichten über ruhmreiche Helden, Generäle oder Staatsmänner.
+    relationships: |
+      Obwohl er sie aufrichtig liebt und ihr anblick ihn vor allem mit Stolz füllt, hat er ein distanziertes Verhältnis zu seinen Kindern Calista und Lucen. Calista meidet Interaktionen mit ihrem Vater, da sie in ihm immer seltener mehr sieht als einen inkompetenten, schwachen alten Mann, der seine Ziele nicht erreichen konnte. Nolen hält Lucen wegen seiner freigeistigen Natur für "unkaiserlich", weshalb er ihn seit seienr Kindheit mit strenger Hand zu formen versucht. Lucen empfindet seinen Vater daher als tyrannisch und engstirnig.
+      Garrett von Danamark wird häufig von Noeln eingeladen persönliche Konzerte bei Hof zu spielen.
+    activities: |
+      Sitzen
+    history: |
+      Kein besonderer vermerk in seiner Lebensgeschichte
+    campagin_story: |
+  misc:
+    - Nach seinem Tod wird es sicher einen mit mehrheit gewählten neuen Kaiser/Kaiserin geben.
