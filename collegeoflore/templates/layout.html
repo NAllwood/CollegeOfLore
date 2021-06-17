@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de" class="page-{{ page_name }}">
+    <head>
+        {% block head %}
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+            <title>
+              {% block location %}{% endblock %}
+              College Of Lore
+            </title>
+
+            <link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}" />
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block body %}
+            <header class="" id = "">
+                {% block startup %}
+                This is the header
+                {% endblock %}
+            </header>
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+        <footer id="footer">
+           
+        </footer>
+
+    </body>
+
+    {% block scripts %}
+        {# <script src="{{ static('js/lib/jquery/jquery-2.1.0.min.js') }}"></script>
+        <script src="{{ static('js/lib/velocity/velocity.min.js') }}"></script> 
+        <script src="{{ static('js/lib/hyphenator/Hyphenator.js') }}"></script>
+        <script src="{{ static('js/main.js') }}"></script>#}
+
+        <script>
+        </script>
+    {% endblock %}
+</html>
