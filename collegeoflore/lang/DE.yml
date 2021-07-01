@@ -1,3 +1,4 @@
+# Person
 picture: Bild
 names: Namen
 last_name: Nachname
@@ -25,3 +26,28 @@ activities: Aktivitäten
 history: Geschichte
 campagin_story: Innerhalb der Kampagne
 misc: Verschiedenes
+name: Umaron (Stadt)
+pictures: Bilder
+# Location
+geography: Geographie
+within: Innerhalb von
+bordering: Genzt an
+contains: Beinhaltet
+society: Gesellschaft
+species: Spezies
+notable_inhabitants: Bemerkenswerte Bewohner
+religions: Religionen
+politics: Politik
+gov_type: Regierungsform
+leader: Anführer
+allies: Verbündete
+enemies: Gegner
+history: Geschichte
+notable_locations: Bemerkenswerte Orte
+government: Regierung
+law_and_order: Recht und Ordnung
+crime: Kriminalität
+trade: Handel
+culture: Kultur
+fashion: Mode
+religion: Religion

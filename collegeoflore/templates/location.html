@@ -1,0 +1,37 @@
+{% extends 'wiki_page.html' %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block first_heading %}
+<h1 id="first_heading" class="first_heading">
+    {{ name }}
+</h1>
+{% endblock %}
+
+{% block first_article %}
+<article>
+    <!-- Name -->
+    {{ name }}
+
+    <!-- Alias one -->
+    {% if alias|length == 1 and alias[0] != None %}
+        , manchen bekannt als {{ alias[0] }}
+
+    <!-- Epithet many -->
+    {% elif alias|length > 1 %}
+        , manchen bekannt als {{ alias[0] }}
+            {% for item in alias[1:] %}
+                , oder {{ item }}
+            {% endfor %}
+    {% endif %}
+</article>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}

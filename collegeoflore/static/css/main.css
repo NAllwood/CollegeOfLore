@@ -116,16 +116,16 @@ body {
 }
 
 .content {
-  margin-top: 5em;
+  margin: 8em;
   background-color: var(--surface_color);
   color: var(--on_background_color);
   position: relative;
-  margin-left: 11em;
   padding: 1.25em 1.5em 1.5em 1.5em;
   font-family: sans-serif;
   border-left: 1px solid var(--primary_color_light);
   line-height: 1.6;
   font-size: 0.875em;
+  overflow: auto;
 }
 
 .navigation_bar {

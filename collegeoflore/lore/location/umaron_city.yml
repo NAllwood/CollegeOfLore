@@ -1,0 +1,52 @@
+name: Umaron (Stadt)
+pictures: []
+infobox:
+  geography:
+    within:
+      - Kalrydia
+      - Umaron (Reich)
+    bordering:
+      - Roderien
+      - Siradia
+    contains:
+      -
+  society:
+    species:
+      - Humans (82%)
+      - Elves (7%)
+      - Dwarves (5%)
+      - Gnomes (3%)
+      - Halflings (2%)
+      - Other (1%)
+    notable_inhabitants:
+      - Nolen2
+      - Zalia
+      - Kornelius Iller
+      - Cale Helder
+    religions: []
+  politics:
+    gov_type: Königreich (Stadt-Staat)
+    leader: Nolen2
+    allies:
+      - Roderien
+      - Siradia
+      - Kardonyth
+    enemies: []
+  history:
+    322VT: Gründung Stadt
+    215VT: Gründung Königreich
+    215VT: Beginn 200 Jähriger Krieg
+    7NT: Gründung Kaiserreich
+articles:
+  description: 
+  notable_locations: []
+  geography: 
+  government: 
+  law_and_order: 
+  crime: 
+  trade:
+  culture:
+  fashion:
+  religion:
+misc:
+  - Es ist ungünsitg eine stadt, einen Stadt-Staat, ein Königreich und ein Kaiserreich gleich zu benennen

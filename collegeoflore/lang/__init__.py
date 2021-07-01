@@ -1,12 +1,13 @@
 import typing
 import os
 import yaml
+import logging
+
+LOG = logging.getLogger(__name__)
 
 
 def translate(mapping: dict, key: str) -> typing.Optional[str]:
-    print(mapping)
-    print(key)
-    return mapping.get(key)
+    return mapping.get(key, key)
 
 
 def load_locale() -> dict:
@@ -19,6 +20,5 @@ def load_locale() -> dict:
                     with open(os.path.join(root, filename), "r") as ymlfile:
                         locales[name] = yaml.load(ymlfile, Loader=yaml.Loader)
                 except FileNotFoundError:
-                    print("could not find locale file to load")
-
+                    LOG.warning("could not find locale file to load")
     return locales
