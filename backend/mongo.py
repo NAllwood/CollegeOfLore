@@ -19,7 +19,7 @@ def test_connection(app: web.Application):
     for key, _ in app.config['mongodb'].items():
         key = get_app_key('mongo', key)
         try:
-            app[key].is_mongos()
+            app[key].is_mongos
         except ServerSelectionTimeoutError:
             LOG.error("Mongo-Client {key} is not connected!".format(key=key))
 
