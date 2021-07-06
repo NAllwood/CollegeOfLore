@@ -7,8 +7,7 @@ import jinja2
 import aiohttp_jinja2
 from functools import partial
 from aiohttp import web
-from . import routes
-from . import di
+from . import routes, mongo, linker
 from collegeoflore import lang
 
 
@@ -44,6 +43,7 @@ class Application(web.Application):
         self.load_plugins(debug)
 
         routes.register(self)
+        linker.get_all_articles_dict()
 
         #di.GLOBAL_SCOPE = self
 
@@ -51,8 +51,8 @@ class Application(web.Application):
 
     def load_plugins(self, debug: bool):
         LOG.info('load plugins')
-        """ self.cleanup_ctx.append(blower_client.enable)
-        self.cleanup_ctx.append(db_socket_server.enable) """
+        self.cleanup_ctx.append(mongo.enable)
+        # self.cleanup_ctx.append(db_socket_server.enable)
         if debug:
             # self.cleanup_ctx.append(blower_test_server.enable)
             pass
@@ -78,3 +78,11 @@ def setup_logging():
     handler.setFormatter(formatter)
 
     logging.basicConfig(level=logging.DEBUG, handlers=[handler])
+
+
+def main(host=None, port=None, config=None):
+    web.run_app(create_app(config=config), host=host, port=port)
+
+
+if __name__ == '__main__':
+    main()

@@ -15,7 +15,7 @@
   --secondary_color_dark:#003850;
   --secondary_color_light:#00628c;
 
-  --contras_color: #c7c537fb;
+  --contrast_color: #c7c537fb;
 
   --on_background_color:#c7c7c7;
   --on_surface_color:#e0e0e0;
@@ -32,15 +32,15 @@
 
 
 html[data-theme='light'] {
-  --background_color:#d6c3d3;
-  --surface_color:#ad9bab;
+  --background_color:#e0e0e0;
+  --surface_color:#c6c9b9;
 
-  --primary_color_dark:#50394c;
-  --primary_color_light:#b2b2b2;
+  --primary_color_dark:#607d8b;
+  --primary_color_light:#78909c;
   --secondary_color_dark:#003850;
   --secondary_color_light:#00628c;
 
-  --contras_color: #ffef96;
+  --contrast_color: #b8a643;
 
   --on_background_color:#161514;
   --on_surface_color:#181616;

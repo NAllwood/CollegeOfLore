@@ -9,7 +9,6 @@ from aiohttp import web
 
 
 LOG = logging.getLogger(__name__)
-BASE_PATH = os.path.dirname(__file__)
 
 
 def get_local_context(base_path: str, article_type: str, name: str) -> typing.Optional[dict]:
@@ -59,6 +58,11 @@ async def index_handler(request):
     context['static'] = request.app.static_url
     context['translate'] = request.app['translate']
     return aiohttp_jinja2.render_template("index.html", request, context)
+
+
+async def favicon_handler(request):
+    path = os.path.join(request.app["base_path"], "static", "favicon.ico")
+    return web.FileResponse(path=path)
 
 
 # async def person_handler(request):
@@ -117,6 +121,7 @@ def register(app):
 
     routes.get('/metrics')(prometheus_async.aio.web.server_stats)
     routes.get('/')(index_handler)
+    routes.get('/favicon.ico')(favicon_handler)
     # routes.get('/person/{name}')(person_handler)
     routes.get('/{article_type}/{name}')(general_handler)
     app.add_routes(routes)

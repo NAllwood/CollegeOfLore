@@ -1,16 +1,14 @@
 """Console script for collegeoflore."""
-import sys
+import collegeoflore.app
 import click
 
 
 @click.command()
-def main(args=None):
-    """Console script for collegeoflore."""
-    click.echo("Replace this message by putting your code into "
-               "collegeoflore.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
-    return 0
+@click.option('--host', default='0.0.0.0', help='Host address to run on')
+@click.option('--port', default=8080, help='TCP port to listen on')
+def main(host, port):
+    collegeoflore.app.main(host=host, port=port)
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    main()
