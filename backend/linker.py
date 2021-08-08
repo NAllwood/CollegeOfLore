@@ -10,8 +10,8 @@ ALLOWED_DIRS = ["item", "location", "organization", "person"]
 # TODO make this a mongo request
 
 
-def get_all_articles_dict() -> dict:
-    articles = {}
+def get_all_records() -> dict:
+    records = {}
     for root, _, files in os.walk(os.path.join(BASE_PATH, LORE_FOLDER_NAME), topdown=False):
         for name in files:
             article_category = next(
@@ -21,11 +21,11 @@ def get_all_articles_dict() -> dict:
 
             article_name = os.path.splitext(name)[0]
             article_path = os.path.join(article_category, article_name)
-            articles.update({article_name: article_path})
+            records.update({article_name: article_path})
 
-    return articles
+    return records
 
 
-def insert_links(context: dict, articles_dict: dict) -> dict:
+def insert_links(context: dict, records: dict) -> dict:
     pass
     # TODO

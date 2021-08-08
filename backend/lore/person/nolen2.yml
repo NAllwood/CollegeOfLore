@@ -1,3 +1,4 @@
+  type: person
   pictures:
     - https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cd0917f8-e55f-454a-aeae-7d3d7c3bb79a/dcxj9zl-761fe2f9-1fbb-4e5e-87dc-6ba3c84fdb6b.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NkMDkxN2Y4LWU1NWYtNDU0YS1hZWFlLTdkM2Q3YzNiYjc5YVwvZGN4ajl6bC03NjFmZTJmOS0xZmJiLTRlNWUtODdkYy02YmEzYzg0ZmRiNmIuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.llZfvGlGsy3Xl7g4KUkKQ3sQO5JHr0sFQanoTEViLXs
     - https://db4sgowjqfwig.cloudfront.net/images/2739038/Lord_Neverember_portrait.jpg
@@ -26,14 +27,14 @@
       status: lebendig
       place_of_death:
     items: {}
-  family:
-    - Urgroßvater: Nolen1 Silverbridge
-    - Großvater: Tidus Silverbridge
-    - Vater: Constantine Silverbridge
-    - Tochter: Calista Silverbridge
-    - Sohn: Lucen Silverbridge
-    - Frau: Agatha Silverbridge
-    - Frau: Selise Silverbridge
+    family:
+      - Urgroßvater: Nolen1 Silverbridge
+      - Großvater: Tidus Silverbridge
+      - Vater: Constantine Silverbridge
+      - Tochter: Calista Silverbridge
+      - Sohn: Lucen Silverbridge
+      - Frau: Agatha Silverbridge
+      - Frau: Selise Silverbridge
   articles:
     description: |
       Nolen ist von großer Statur und strahlt aufgrund seiner allzeit korrekten Körperhaltung und seines makellos gepflegtem Äußerem eine an Arroganz grenzende Erhabenheit aus.

@@ -12,35 +12,38 @@ LOG = logging.getLogger(__name__)
 async def insert_lore():
     LOG.info("Inserting documents from local files")
     LORE_FOLDER_NAME = "lore"
-    ALLOWED_DIRS = ["item", "location", "organization", "person"]
+    # ALLOWED_DIRS = ["item", "location", "organization", "person"]
 
     config = basics.load_config()
     db = basics.get_mongo_db(config)
 
     for root, _, files in os.walk(os.path.join(basics.BASE_PATH, LORE_FOLDER_NAME), topdown=False):
         for name in files:
-            article_category = next(
-                (dir_name for dir_name in ALLOWED_DIRS if dir_name in root), None)
-            if not article_category:
-                LOG.warn(
-                    f"Found file with invalid category at '{root} /{name}'. Skipping this.")
-                continue
+            # article_category = next(
+            #     (dir_name for dir_name in ALLOWED_DIRS if dir_name in root), None)
+            # if not article_category:
+            #     LOG.warn(
+            #         f"Found file with invalid category at '{root} /{name}'. Skipping this.")
+            #     continue
+            # collection_name = article_category
+
+            collection_name = "records"
 
             file_name = os.path.splitext(name)[0]
 
-            document = basiscs.load_yaml(os.path.join(root, name))
+            document = basics.load_yaml(os.path.join(root, name))
             if not "name_id" in document:
                 document["name_id"] = file_name
 
             LOG.info(f"have {name}")
-            if not basiscs.exists(db[article_category], {"name_id": document["name_id"]}):
+            if not await basics.exists(db[collection_name], {"name_id": document["name_id"]}):
                 LOG.info(
-                    f"Inserting {file_name} into the database under {article_category}")
-                db[article_category].insert_one(document)
+                    f"Inserting {file_name} into the database under {collection_name}")
+                db[collection_name].insert_one(document)
 
 
-@click.command()
 async def main():
+    basics.setup_logging()
     await insert_lore()
 
 

@@ -15,10 +15,19 @@ async def favicon_handler(request):
 
 
 async def general_handler(request):
-    article_type = request.match_info['article_type']
-    context = await context_processors.get_render_context(request)
+    context = await context_processors.get_record_context(request)
     if not context:
-        # TODO 404 page
-        return aiohttp_jinja2.render_template("index.html", request, context={}, status=404)
+        # TODO prettier error page (design, multiple error messages from a collection)
+        status = 404
+        context = {"error_code": status, "error_msg": "File Not Found"}
+        return aiohttp_jinja2.render_template("error.html", request, context={}, status=status)
 
-    return aiohttp_jinja2.render_template("{}.html".format(article_type), request, context)
+    record_type = context.get("type")
+    if not record_type:
+        # TODO prettier error page (design, multiple error messages from a collection)
+        status = 500
+        context = {"error_code": status,
+                   "error_msg": "The college has the pages you are looking for, but sadly they are half burnt and barely readable."}
+        return aiohttp_jinja2.render_template("error.html", request, context={}, status=status)
+
+    return aiohttp_jinja2.render_template("{}.html".format(record_type), request, context)

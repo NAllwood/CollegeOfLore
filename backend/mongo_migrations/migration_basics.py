@@ -1,5 +1,6 @@
 import motor.motor_asyncio
 import yaml
+import sys
 import logging
 import os
 import backend
@@ -7,6 +8,21 @@ from typing import Any
 
 BASE_PATH = os.path.dirname(backend.__file__)
 LOG = logging.getLogger(__name__)
+
+
+def setup_logging():
+    """
+    configure logger to include date and log on stdout
+    :param bool warnings: Whether to show warnings
+    :param logging.Logger logger: logger that needs to be configured
+    """
+
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+
+    logging.basicConfig(level=logging.DEBUG, handlers=[handler])
 
 
 def load_config():
@@ -43,7 +59,7 @@ def get_mongo_db(config: dict) -> motor.motor_asyncio.AsyncIOMotorDatabase:
 
 async def exists(coll: motor.motor_asyncio.AsyncIOMotorCollection, doc_filter: dict) -> bool:
     LOG.info(f"Checking if document with {doc_filter} exists...")
-    if coll.find(doc_filter).count() > 0:
+    if await coll.count_documents(doc_filter) > 0:
         LOG.info("Yes")
         return True
     LOG.info("No")

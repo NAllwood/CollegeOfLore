@@ -25,6 +25,7 @@ def test_connection(app: web.Application):
 
 
 async def enable(app: web.Application):
+    print("in enable!")
     if 'mongodb' not in app.config:
         raise AttributeError('mongodb config is missing')
 
@@ -35,15 +36,17 @@ async def enable(app: web.Application):
 
         app_key = get_app_key('mongo', key)
         LOG.debug(app_key)
-        app[app_key] = client
+        app[app_key] = client  # "mongo" for connection "default"
 
-        app_key = get_app_key('db', key)
-        LOG.debug(app_key)
-        app[app_key] = client[db]
+        # disabled because we dont use directly the mongo client (and thus db) anyway
+        # app_key = get_app_key('db', key)
+        # LOG.debug(app_key)
+        # app[app_key] = client[db]  # "db" for connection "default"
 
     test_connection(app)
 
-    yield
+
+async def disable(app: web.Application):
 
     for key, _ in app.config['mongodb'].items():
         key = get_app_key('mongo', key)

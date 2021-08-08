@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+{{ super() }}
+
+<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}" />
+{% endblock %}
+
+{% block startup %}
+<div id="title">Indextitle</div>
+{% endblock %}
+
+{% block content %}
+<h1>ERROR</h1>
+{{ error_code }} {{ error_msg }}
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}
