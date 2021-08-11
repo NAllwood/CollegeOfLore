@@ -63,7 +63,7 @@ class Application(web.Application):
         self.db_clients = {}
 
         # needed for auto insering links into templates. fetches all records from db (projected)
-        #self.linking_map = linker.get_all_records()
+        #self.linking_map = linker.get_known_records_map()
 
     def setup_templating(self):
         loader = jinja2.FileSystemLoader(os.path.join(BASE_PATH, 'templates/'))

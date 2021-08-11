@@ -99,8 +99,9 @@ def test_get_all_possible_names_from_record(nolen_record, nolen_possible_names):
     ("Seine Freunde nannten ihn Nolen.", ("Nolen", 26)),
     ("Getauft wurde er Nolen Constantin Lepidus.", ("Nolen Constantin Lepidus", 17)),
     ("Doch Nolen Constantin Lepidus Silverbridge war sein ganzer Name.", ("Nolen Constantin Lepidus Silverbridge", 5))])
-def test_get_longest_match(input_text, expected, nolen_possible_names):
-    result = linker.get_longest_match(input_text, nolen_possible_names)
+def test_get_longest_matching_substring(input_text, expected, nolen_possible_names):
+    result = linker.get_longest_matching_substring(
+        input_text, nolen_possible_names)
     assert result == expected
 
 
@@ -109,8 +110,8 @@ def test_get_longest_match(input_text, expected, nolen_possible_names):
     ("Der Text vor Nolen und der danach", "nolen2",
      'Der Text vor <a href="records/nolen2">Nolen</a> und der danach'),
     ("Doch Nolen Constantin Lepidus Silverbridge war sein ganzer Name.", "nolen2", 'Doch <a href="records/nolen2">Nolen Constantin Lepidus Silverbridge</a> war sein ganzer Name.')])
-def test_recursive_replace_names_to_links(input_text, name_id, expected, nolen_possible_names) -> str:
-    text = linker.recursive_replace_names_to_links(
+def test_recursive_replace_substings_with_links(input_text, name_id, expected, nolen_possible_names) -> str:
+    text = linker.recursive_replace_substings_with_links(
         input_text, nolen_possible_names, name_id)
     assert text == expected
 
@@ -126,7 +127,7 @@ def test_recursive_replace_names_to_links(input_text, name_id, expected, nolen_p
     ("sometext. One. someothertext", 'sometext. <a href="records/one">One</a>. someothertext')])
 def test_replace_text_of_record_person(input, expected, replace_context_person):
     # text to replace is irrelevant for persons becaus the names are replaced
-    replaced = linker.replace_text_of_record(
+    replaced = linker.replace_text_with_links_for_records(
         input, "", replace_context_person.get("one"))
     assert replaced == expected
 
@@ -138,6 +139,6 @@ def test_replace_text_of_record_person(input, expected, replace_context_person):
     ("minusTwoone", 'minus<a href="records/two2">Two</a>one'),
     ("sometext. Two. someothertext", 'sometext. <a href="records/two2">Two</a>. someothertext')])
 def test_replace_text_of_record_not_person(input, expected, replace_context_not_person):
-    replaced = linker.replace_text_of_record(
+    replaced = linker.replace_text_with_links_for_records(
         input, "two", replace_context_not_person.get("two"))
     assert replaced == expected
