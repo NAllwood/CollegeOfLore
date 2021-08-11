@@ -44,8 +44,8 @@ async def get_known_records_map(db_client: DBClient) -> dict:
             records_map[name]["multi"] = True
             continue
 
-        records_map[name] = {"type": record["type"], "multi": False}
-    return records
+        records_map[name] = {"type": record.get("type", None), "multi": False}
+    return records_map
 
 
 def generate_str_from_iterable(it: Iterable):
@@ -175,7 +175,7 @@ def replace_text_with_links_for_records(original_text: str, replaced_str: str, r
     return text
 
 
-async def insert_links(new_record: dict, records_map: dict) -> dict:
+def insert_links(new_record: dict, records_map: dict) -> dict:
     """Inserts links to other records into a given record by replacing all mentions with corresponding html links
 
     Args:
@@ -207,7 +207,7 @@ def insert_links_into_infobox(new_record: dict, records_map: dict):
         new_record (dict): the record in which the links should be inserted
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
     """
-    for word in generate_str_from_iterable(new_record):
+    for word in generate_str_from_iterable(new_record.get("infobox", {})):
         if word not in records_map:
             continue
 
@@ -222,7 +222,7 @@ def insert_links_into_articles(new_record: dict, records_map: dict):
         new_record (dict): the record in which the links should be inserted
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
     """
-    for article in new_record["articles"]:
+    for article in new_record.get("articles", []):
         for text in article:
             # go through every entry of known records and replace each mention with a link
             for key, items in records_map.items():

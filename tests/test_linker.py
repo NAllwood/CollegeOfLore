@@ -142,3 +142,16 @@ def test_replace_text_of_record_not_person(input, expected, replace_context_not_
     replaced = linker.replace_text_with_links_for_records(
         input, "two", replace_context_not_person.get("two"))
     assert replaced == expected
+
+
+# TODO 1
+def insert_links_into_infobox(new_record: dict, records_map: dict):
+    pass
+
+
+def insert_links_into_articles(new_record: dict, records_map: dict):
+    pass
+
+
+def test_insert_links():
+    pass

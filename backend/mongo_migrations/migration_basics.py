@@ -35,7 +35,7 @@ def load_config():
 
 
 def load_yaml(path: str):
-    LOG.info("Trying to load yaml {path}")
+    LOG.info(f"Trying to load yaml {path}")
     try:
         with open(path, "r") as ymlfile:
             return yaml.load(ymlfile, Loader=yaml.Loader)

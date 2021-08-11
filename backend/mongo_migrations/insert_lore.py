@@ -1,9 +1,9 @@
 
 import os
 import asyncio
-import click
 import logging
 from backend.mongo_migrations import migration_basics as basics
+from backend.mongo_migrations.migration_mongo_client import MigrationMongoClient
 from backend import linker
 
 
@@ -17,9 +17,9 @@ async def insert_lore():
 
     config = basics.load_config()
     db = basics.get_mongo_db(config)
+    db_client = MigrationMongoClient(db)
     COLLECTION_NAME = "records"
     coll = db[COLLECTION_NAME]
-    known_records = linker.get_known_records_map(coll)
 
     for root, _, files in os.walk(os.path.join(basics.BASE_PATH, LORE_FOLDER_NAME), topdown=False):
         for name in files:
@@ -30,6 +30,9 @@ async def insert_lore():
             #         f"Found file with invalid category at '{root} /{name}'. Skipping this.")
             #     continue
             # collection_name = article_category
+
+            # update known records after every insert
+            known_records = await linker.get_known_records_map(db_client)
 
             file_name = os.path.splitext(name)[0]
 
@@ -43,7 +46,7 @@ async def insert_lore():
                 document = linker.insert_links(document, known_records)
                 LOG.info(
                     f"Inserting {file_name} into the database under {COLLECTION_NAME}")
-                coll.insert_one(document)
+                await coll.insert_one(document)
             else:
                 LOG.info("Record already exists in the dabase!")
 

@@ -2,6 +2,10 @@ from abc import ABC
 from typing import Optional
 from aiohttp import web
 from bson import ObjectId
+import logging
+
+
+LOG = logging.getLogger(__name__)
 
 
 class DBClient(ABC):
@@ -14,10 +18,10 @@ class DBClient(ABC):
     async def store(self, data: dict, **kwargs) -> Optional[ObjectId]:
         pass
 
-    async def find(self, *args, **kwargs) -> Optional[dict]:
+    async def find_one(self, *args, **kwargs) -> Optional[dict]:
         pass
 
-    async def find_many(self, *args, **kwargs) -> list:
+    async def find(self, *args, **kwargs) -> list:
         pass
 
     async def delete(self, *args, **kwargs) -> Optional[int]:

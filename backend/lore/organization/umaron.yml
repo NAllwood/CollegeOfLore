@@ -1,19 +1,20 @@
 type: organization
 name: Kaiserreich Umaron
-within: Kalrydia
-area_of_operation:
-  - Umaron
-  - Roderien
-  - Siradia
-  - Kardonyth
-allies:
-  -
-enemies:
-  -
-goals:
-  -
-members:
-  -
-pictures:
-  -
-description: |
+name_id: umaron_org
+pictures: []
+infobox:
+  within: Kalrydia
+  area_of_operation:
+    - Umaron
+    - Roderien
+    - Siradia
+    - Kardonyth
+  allies: []
+  enemies: []
+  goals: []
+  members:
+    - Nolen Silverbridge
+    - Garrett von Danamark
+articles:
+  description: |
+    Das erreichbare Kaiserreich Umaron ist reich an Reichtümern und gereicht den reichen Reichsbürgern in farbreichen Bereichen zu glorreichen Streichen.

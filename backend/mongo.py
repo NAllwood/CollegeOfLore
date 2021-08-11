@@ -31,16 +31,14 @@ async def enable(app: web.Application):
 
     for key, client_attr in app.config['mongodb'].items():
         client_attr = copy.copy(client_attr)
-        #db = client_attr.pop('db')
+        db = client_attr.pop('db')
         client = motor.motor_asyncio.AsyncIOMotorClient(**client_attr)
 
         app_key = get_app_key('mongo', key)
-        LOG.debug(app_key)
         app[app_key] = client  # "mongo" for connection "default"
 
         # disabled because we dont use directly the mongo client (and thus db) anyway
         # app_key = get_app_key('db', key)
-        # LOG.debug(app_key)
         # app[app_key] = client[db]  # "db" for connection "default"
 
     test_connection(app)
