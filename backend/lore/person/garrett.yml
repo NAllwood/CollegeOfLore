@@ -1,0 +1,44 @@
+  type: person
+  name_id: garrett
+  pictures:
+    - https://chroniclesofalscium.weebly.com/uploads/2/6/7/6/26760581/a_orig.jpg
+    - https://i.pinimg.com/736x/d3/c6/19/d3c61969bb5fc4d3ba76029f4ee629d9.jpg
+  names:
+    - Garrett
+  last_name: von Danamark
+  infobox:
+    description_info:
+      age: 41
+      species: mensch
+      gener: männlich
+      height: 1.83m
+      alignment: CN
+      class: Bard
+    biographical_info:
+      title: Gildenmeister
+      origin: Umaron
+      epithet: []
+      alias: []
+      organizations: 
+        - Gilde
+        - Hof von Umaron
+      status: lebendig
+      place_of_death:
+    items: {}
+    family: []
+  articles:
+    description: |
+      Sieht sehr gut aus
+    personality: | 
+      Hedonistisch und überschwänglich, aber auch überaus charismatisch und einnehmend. Weiß leute anzuführen.
+    relationships: |
+      Nolen mag ihn, weil er gut laute spielen Heldengeschichten erzählen kann
+    activities: Abenteuer erleben, Musik spielen, Genießen
+    history: 
+    campagin_story: |
+      Die Gruppe ist Nolen noch nicht begegnet
+  misc:
+    - Hasst Orcs
+    - Hat mehr Bastarde als er zählen kann und noch mehr von denen er nichts weiß.
+    - Hat mal einen Lich bezwungen
+    - War ausschlaggebend an der Zerschlagung des dämonischen Marilith Kults und ihrer schattenhaften Verbündeten beteiligt

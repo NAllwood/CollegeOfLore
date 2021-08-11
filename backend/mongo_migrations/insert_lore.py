@@ -40,6 +40,8 @@ async def insert_lore():
                 LOG.info(
                     f"Inserting {file_name} into the database under {collection_name}")
                 db[collection_name].insert_one(document)
+            else:
+                LOG.info("Record already exists in the dabase!")
 
 
 async def main():
