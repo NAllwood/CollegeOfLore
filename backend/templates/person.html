@@ -1,0 +1,61 @@
+{% extends 'wiki_page.html' %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block first_heading %}
+<h1 id="first_heading" class="first_heading">
+    {% for item in names %}
+    {{ item }}
+    {% endfor %}
+
+    {% if last_name != None %}
+    {{ last_name }}
+    {% endif %}
+</h1>
+{% endblock %}
+
+{% block first_article %}
+<article>
+    <!-- Name -->
+    {{ names[0] }}
+
+    <!-- Epithet one -->
+    {% if infobox.biographical_info.epithet|length == 1 and infobox.biographical_info.epithet[0] != None %}
+    "{{ infobox.biographical_info.epithet[0] }}"
+
+    <!-- Epithet rmany -->
+    {% elif infobox.biographical_info.epithet|length > 1 %}
+    ( "{{ infobox.biographical_info.epithet[0] }}"
+    {% for item in infobox.biographical_info.epithet[1:] %}
+    | "{{ item }}"
+    {% endfor %}
+    )
+    {% endif %}
+
+    <!-- Second Names -->
+    {% if names|length > 1 %}
+    {% for item in names[1:] %}
+    {{ item }}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Lastname -->
+    {% if last_name is defined %}
+    {{ last_name }}
+    {% endif %}
+
+    <!-- Also known as -->
+    {% if infobox.biographical_info.alias|length > 0 and infobox.biographical_info.alias[0] != None %}
+    , manchen bekannt als {{ infobox.biographical_info.alias }},
+    {% endif %}
+</article>
+{% endblock %}
+
+
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}

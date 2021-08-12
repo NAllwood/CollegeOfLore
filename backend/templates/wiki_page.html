@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+{{ super() }}
+
+<link rel="stylesheet" type="text/css" href="{{ static('css/wiki_page.css') }}" />
+{% endblock %}
+
+
+{% block content %}
+
+{% block first_heading %}
+{% endblock %}
+
+{% block first_article %}
+{% endblock %}
+
+
+{% block infobox %}
+<!--Infobox-->
+<aside id="infobox" class="infobox">
+    {% if pictures|length > 0 %}
+        <div id="slideshow_container" class="slideshow_container">
+            <!-- images -->
+            {% for image_src in pictures %}
+                <div class="slides fade">
+                    {% if pictures|length > 1 %}
+                        <div class="slides_numbertext"> {{ loop.index }} / {{ pictures|length }} </div>
+                    {% endif %}
+                    <img src="{{ pictures[loop.index - 1] }}" alt="{{ names[0] }}" onclick="enlargeImage(this)"></img>
+                </div>
+            {% endfor %}
+
+            <!--Next and previous buttons-->
+            {% if pictures|length > 1 %}
+                <a class="slide_prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="slide_next" onclick="plusSlides(1)">&#10095;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+    {% for category_name, category_dict in infobox.items() %}
+    <!--only create category entry if dict is not empty-->
+    {% if category_dict is mapping and category_dict|length > 0 %}
+    <section class="infobox_section">
+        <h4 class="infobox_section_header">{{ translate(category_name) }}</h4>
+        {% for info_name, info_value in category_dict.items() %}
+        <!--only create section entry if value is not none and not empty-->
+        {% if info_value is not sequence and info_value != None or info_value is sequence and info_value|length > 0 %}
+        <div class="section_entry border_bottom">
+            <div class="section_entry_name">{{ translate(info_name) }}</div>
+            <!--string/int representation-->
+            {% if info_value is string or info_value is integer %}
+            <div class="section_entry_value">{{ info_value }}</div>
+            <!--list representation-->
+            {% elif info_value is sequence %}
+            <ul class="no_bullets">
+                {% for point in info_value %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </section>
+    {% endif %}
+    {% endfor %}
+</aside>
+{% endblock %}
+
+{% block articles %}
+<!--Articles-->
+{% for article_name, article_text in articles.items() %}
+    <!--String-->
+    {% if article_text is string and article_text != None %}
+        <div class="article_block">
+            <!--TODO translator function based on locale-->
+            <h2 class="article_block_heading">{{ translate(article_name) }}</h2>
+            <article class="article_block_text">
+                {{ article_text }}
+            </article>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<!--Misc-->
+{% if misc|length > 0 %}
+<div id="misc_block" class="article_block">
+    <h2 id="misc_heading" class="article_block_heading">Misc</h2>
+    <ul id="misc_block_list" class="misc_block_list">
+        {% for point in misc %}
+        <li>{{ point }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="{{ static('js/wiki_page.js') }}"></script>
+{{ super() }}
+{% endblock %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de" class="page-{{ page_name }}" data-theme='default'>
+
+<head>
+    {% block head %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <title>
+        {% block location %}{% endblock %}
+        College Of Lore
+    </title>
+
+    <link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}" />
+    {% endblock %}
+</head>
+
+<body>
+    <header>
+        <span id="theme-toggle" class="theme-toggle"></span>
+    </header>
+
+    <div id="content" class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+
+</body>
+
+{% block scripts %}
+<script src="{{ static('js/main.js') }}"></script>
+{% endblock %}
+
+</html>

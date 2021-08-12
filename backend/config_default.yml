@@ -1,0 +1,6 @@
+mongodb:
+  default:
+    host: 'mongo'
+    port: 27017
+    db: 'iuun'
+    serverSelectionTimeoutMS: 2500

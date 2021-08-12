@@ -1,0 +1,57 @@
+  type: person
+  name_id: nolen2
+  pictures:
+    - https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cd0917f8-e55f-454a-aeae-7d3d7c3bb79a/dcxj9zl-761fe2f9-1fbb-4e5e-87dc-6ba3c84fdb6b.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NkMDkxN2Y4LWU1NWYtNDU0YS1hZWFlLTdkM2Q3YzNiYjc5YVwvZGN4ajl6bC03NjFmZTJmOS0xZmJiLTRlNWUtODdkYy02YmEzYzg0ZmRiNmIuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.llZfvGlGsy3Xl7g4KUkKQ3sQO5JHr0sFQanoTEViLXs
+    - https://db4sgowjqfwig.cloudfront.net/images/2739038/Lord_Neverember_portrait.jpg
+  names:
+    - Nolen
+    - Constantin
+    - Lepidus
+  last_name: Silverbridge
+  infobox:
+    description_info:
+      age: 58
+      species: human
+      gener: male
+      height: 1.88m
+      alignment: LN
+      class: noble
+    biographical_info:
+      title: Kaiser
+      origin: Umaron
+      epithet: 
+        - II
+        - der Zweite
+        - dritter Kaiser von Umaron
+      alias: []
+      organizations: []
+      status: lebendig
+      place_of_death:
+    items: {}
+    family:
+      - Urgroßvater: Nolen1 Silverbridge
+      - Großvater: Tidus Silverbridge
+      - Vater: Constantine Silverbridge
+      - Tochter: Calista Silverbridge
+      - Sohn: Lucen Silverbridge
+      - Frau: Agatha Silverbridge
+      - Frau: Selise Silverbridge
+  articles:
+    description: |
+      Nolen ist von großer Statur und strahlt aufgrund seiner allzeit korrekten Körperhaltung und seines makellos gepflegtem Äußerem eine an Arroganz grenzende Erhabenheit aus.
+      Auf sein Alter lassen nur wenige Falten und sein fliehender Haaransatz schleißen, aus welchem schulterlang nun mehr graue als hellblonde Strähnen sprießen.
+    personality: | 
+      Mutig im Angesicht seiner Feinde und entschlossen vor seinem Volk, aber von seinen Vertrauten überaus beeinflussbar.
+      Nolen ist bekannt für seinen unerschütterlichen Drang den Ruhm und Einfluss seiner Vorväter zu erreichen, in deren Schatten er sich gestellt fühlt.
+      Seinen Geltungsdrang konnte er in der Blüte seiner Jahre nicht befriedigen, weshalb er mit zunehmendem alter immer verbitterter und aktionistischer wurde. Er hat eine große Liebe zur Musik und zum Hören von fantastischen Geschichten über ruhmreiche Helden, Generäle oder Staatsmänner.
+    relationships: |
+      Obwohl er sie aufrichtig liebt und ihr anblick ihn vor allem mit Stolz füllt, hat er ein distanziertes Verhältnis zu seinen Kindern Calista und Lucen. Calista meidet Interaktionen mit ihrem Vater, da sie in ihm immer seltener mehr sieht als einen inkompetenten, schwachen alten Mann, der seine Ziele nicht erreichen konnte. Nolen hält Lucen wegen seiner freigeistigen Natur für "unkaiserlich", weshalb er ihn seit seienr Kindheit mit strenger Hand zu formen versucht. Lucen empfindet seinen Vater daher als tyrannisch und engstirnig.
+      Garrett von Danamark wird häufig von Nolen eingeladen persönliche Konzerte bei Hof zu spielen.
+    activities: |
+      Sitzen
+    history: |
+      Kein besonderer vermerk in seiner Lebensgeschichte
+    campagin_story: |
+      Die Gruppe ist Nolen noch nicht begegnet
+  misc:
+    - Nach seinem Tod wird es sicher einen mit mehrheit gewählten neuen Kaiser/Kaiserin geben.
