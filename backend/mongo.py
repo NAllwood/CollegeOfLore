@@ -8,16 +8,16 @@ LOG = logging.getLogger(__name__)
 
 
 def get_app_key(type: str, key: str) -> str:
-    if key == 'default':
-        template = '{type}'
+    if key == "default":
+        template = "{type}"
     else:
-        template = '{type}_{name}'
+        template = "{type}_{name}"
     return template.format(type=type, name=key)
 
 
 def test_connection(app: web.Application):
-    for key, _ in app.config['mongodb'].items():
-        key = get_app_key('mongo', key)
+    for key, _ in app.config["mongodb"].items():
+        key = get_app_key("mongo", key)
         try:
             app[key].is_mongos
         except ServerSelectionTimeoutError:
@@ -26,15 +26,15 @@ def test_connection(app: web.Application):
 
 async def enable(app: web.Application):
     print("in enable!")
-    if 'mongodb' not in app.config:
-        raise AttributeError('mongodb config is missing')
+    if "mongodb" not in app.config:
+        raise AttributeError("mongodb config is missing")
 
-    for key, client_attr in app.config['mongodb'].items():
+    for key, client_attr in app.config["mongodb"].items():
         client_attr = copy.copy(client_attr)
-        db = client_attr.pop('db')
+        db = client_attr.pop("db")
         client = motor.motor_asyncio.AsyncIOMotorClient(**client_attr)
 
-        app_key = get_app_key('mongo', key)
+        app_key = get_app_key("mongo", key)
         app[app_key] = client  # "mongo" for connection "default"
 
         # disabled because we dont use directly the mongo client (and thus db) anyway
@@ -46,8 +46,8 @@ async def enable(app: web.Application):
 
 async def disable(app: web.Application):
 
-    for key, _ in app.config['mongodb'].items():
-        key = get_app_key('mongo', key)
+    for key, _ in app.config["mongodb"].items():
+        key = get_app_key("mongo", key)
         app[key].close()
 
-    LOG.debug('mongo disconnected')
+    LOG.debug("mongo disconnected")

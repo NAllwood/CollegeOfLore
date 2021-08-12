@@ -9,8 +9,7 @@ LOG = logging.getLogger(__name__)
 
 
 class DBClient(ABC):
-    """Abstract parent class for all data clients. Provides basic CRUD functions
-    """
+    """Abstract parent class for all data clients. Provides basic CRUD functions"""
 
     def __init__(self, app: web.Application):
         pass

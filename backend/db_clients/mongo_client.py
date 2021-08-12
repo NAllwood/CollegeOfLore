@@ -7,9 +7,9 @@ from typing import Optional
 
 
 class MongoClient(DBClient):
-    """ Class wrapping motor asyncio client for abstactred database access.
-        Instances take a single mongo connection specified in the config yml.
-        Uses "records" as default collection.
+    """Class wrapping motor asyncio client for abstactred database access.
+    Instances take a single mongo connection specified in the config yml.
+    Uses "records" as default collection.
     """
 
     def __init__(self, app: web.Application, mongo_name: str, default_coll="records"):

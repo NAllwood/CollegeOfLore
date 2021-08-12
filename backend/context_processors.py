@@ -43,8 +43,8 @@ async def get_record_context(request: web.Request) -> typing.Optional[dict]:
         dict/None: a dict containing the article information, or None
     """
 
-    resource_category = request.match_info.get('resource_category')
-    record_name_id = request.match_info.get('name')
+    resource_category = request.match_info.get("resource_category")
+    record_name_id = request.match_info.get("name")
 
     if not resource_category or not record_name_id:
         return {}

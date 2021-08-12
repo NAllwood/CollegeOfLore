@@ -18,7 +18,8 @@ def setup_logging():
     """
 
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
 
@@ -45,8 +46,8 @@ def load_yaml(path: str):
 
 def get_mongo_db(config: dict) -> motor.motor_asyncio.AsyncIOMotorDatabase:
     LOG.info("initializing mongodb connection")
-    if 'mongodb' not in config:
-        raise AttributeError('mongodb config is missing')
+    if "mongodb" not in config:
+        raise AttributeError("mongodb config is missing")
 
     config = config["mongodb"]["default"]
 
@@ -57,7 +58,9 @@ def get_mongo_db(config: dict) -> motor.motor_asyncio.AsyncIOMotorDatabase:
     return client[db_name]
 
 
-async def exists(coll: motor.motor_asyncio.AsyncIOMotorCollection, doc_filter: dict) -> bool:
+async def exists(
+    coll: motor.motor_asyncio.AsyncIOMotorCollection, doc_filter: dict
+) -> bool:
     LOG.info(f"Checking if document with {doc_filter} exists...")
     if await coll.count_documents(doc_filter) > 0:
         LOG.info("Yes")

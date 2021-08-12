@@ -27,7 +27,7 @@ def inject(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         # possible injection
-        missing_args = set(arg_spec.args[len(args):default_cut_off])
+        missing_args = set(arg_spec.args[len(args) : default_cut_off])
         missing_args.update(arg_spec.kwonlyargs)
 
         for key in set(missing_args):

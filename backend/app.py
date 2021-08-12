@@ -27,7 +27,7 @@ class Application(web.Application):
         setup_logging()
         # probably needs to happen AFTER "load_plugins" to use underlying database clients
         self.on_startup.append(connect_db_clients)
-        #di.GLOBAL_SCOPE = self
+        # di.GLOBAL_SCOPE = self
 
     def load_config(self, config):
         if config:
@@ -41,7 +41,7 @@ class Application(web.Application):
             raise FileNotFoundError("config file missing!")
 
     def load_plugins(self):
-        LOG.info('loading plugins')
+        LOG.info("loading plugins")
         # creates mongo client for each connection specified in config (creates client and appends it to app)
         self.on_startup.append(mongo.enable)
         self.on_cleanup.append(mongo.disable)
@@ -57,16 +57,16 @@ class Application(web.Application):
         self.base_path = BASE_PATH
 
         # needed like this for builtin jinja2 static lookup function
-        self['static_root_url'] = '/static'
+        self["static_root_url"] = "/static"
 
         # needed to store all (abstracted) database clients
         self.db_clients = {}
 
         # needed for auto insering links into templates. fetches all records from db (projected)
-        #self.linking_map = linker.get_known_records_map()
+        # self.linking_map = linker.get_known_records_map()
 
     def setup_templating(self):
-        loader = jinja2.FileSystemLoader(os.path.join(BASE_PATH, 'templates/'))
+        loader = jinja2.FileSystemLoader(os.path.join(BASE_PATH, "templates/"))
 
         # context processors allow to define functions to automatically create a rendering context from the request
         # maybe if we need universal processors in the future (username, auth, login, ...)
@@ -79,8 +79,7 @@ class Application(web.Application):
         # needed for automatic translation (makes translate function availabe in templates)
         language = "DE"
         locales = lang.load_locale()
-        translate = partial(
-            lang.translate, locales.get(language, {}))
+        translate = partial(lang.translate, locales.get(language, {}))
         env.globals.update(translate=translate)
 
 
@@ -89,6 +88,7 @@ async def connect_db_clients(app: web.Application):
     # currently mongo only
     for mongo_name in app.config["mongodb"].keys():
         MongoClient(app, mongo_name)
+
 
 # used for aiohttp-devtools
 
@@ -107,7 +107,8 @@ def setup_logging():
     """
 
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
 
@@ -118,5 +119,5 @@ def main(host=None, port=None, config=None):
     web.run_app(create_app(config=config), host=host, port=port)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

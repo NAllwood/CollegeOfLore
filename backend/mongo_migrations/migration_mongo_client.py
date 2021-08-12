@@ -10,8 +10,7 @@ LOG = logging.getLogger(__name__)
 
 
 class MigrationMongoClient(DBClient):
-    """ Makes calling backend code for migrations easier because DBClient provided without needing an app
-    """
+    """Makes calling backend code for migrations easier because DBClient provided without needing an app"""
 
     def __init__(self, db: AsyncIOMotorDatabase, default_coll="records"):
         self.default_coll = default_coll

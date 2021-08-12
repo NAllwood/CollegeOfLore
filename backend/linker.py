@@ -85,14 +85,19 @@ def get_all_possible_names_from_record(record: dict) -> set:
     # all names (two list of str to single str into set) e.g. "Nevin Myron Allwood"
     possible_names.add(
         " ".join(
-            [name.capitalize() for name in record.get("names", [])] +
-            ([record["last_name"].capitalize()]
-                if record.get("last_name") else [])
+            [name.capitalize() for name in record.get("names", [])]
+            + ([record["last_name"].capitalize()]
+               if record.get("last_name") else [])
         )
     )
     # first and last name
-    possible_names.add(" ".join([record.get("names", [""])[0].capitalize(
-    )] + ([record["last_name"].capitalize()] if record.get("last_name") else [])))
+    possible_names.add(
+        " ".join(
+            [record.get("names", [""])[0].capitalize()]
+            + ([record["last_name"].capitalize()]
+               if record.get("last_name") else [])
+        )
+    )
     # all first and second names e.g. "Nevin Myron"
     possible_names.add(" ".join([*record.get("names", [])]))
     # only first name e.g. "Nevin"
@@ -110,7 +115,7 @@ def get_longest_matching_substring(text: str, substrings: Iterable) -> Tuple[str
         substrings (Iterable): the substrings that should be searched for
 
     Returns:
-        Tuple[str, int]: longest match as string + its index in the text or (None, -1) 
+        Tuple[str, int]: longest match as string + its index in the text or (None, -1)
     """
     subtexts = sorted(substrings, key=len)
     print(subtexts)
@@ -128,7 +133,9 @@ def get_longest_matching_substring(text: str, substrings: Iterable) -> Tuple[str
     return (longest_subtext, longest_index)
 
 
-def recursive_replace_substings_with_links(original_text: str, substings: Iterable, resource_name: str) -> str:
+def recursive_replace_substings_with_links(
+    original_text: str, substings: Iterable, resource_name: str
+) -> str:
     """Replaces the longest matching occurrences of names in the original text with corresponding links
 
     Args:
@@ -140,18 +147,25 @@ def recursive_replace_substings_with_links(original_text: str, substings: Iterab
         str: the string in which all occurences of the substings are replaced by links
     """
     longest_matching_substring, _ = get_longest_matching_substring(
-        original_text, substings)
+        original_text, substings
+    )
     if not longest_matching_substring:
         return original_text
 
     link = f'<a href="records/{resource_name}">{longest_matching_substring}</a>'
     pre_text, _, post_text = original_text.partition(
         longest_matching_substring)
-    return pre_text + link + recursive_replace_substings_with_links(post_text, substings, resource_name)
+    return (
+        pre_text
+        + link
+        + recursive_replace_substings_with_links(post_text, substings, resource_name)
+    )
 
 
 # TODO multi
-def replace_text_with_links_for_records(original_text: str, replaced_str: str, replace_context: dict):
+def replace_text_with_links_for_records(
+    original_text: str, replaced_str: str, replace_context: dict
+):
     """Replaces mentions of other records within a given text with links based on the linked record type
 
     Args:
@@ -165,13 +179,14 @@ def replace_text_with_links_for_records(original_text: str, replaced_str: str, r
     # if the type of the found record is not "person", replace found mentions of the existing record with a link
     if replace_context["type"] != "person":
         link = f'<a href="records/{replace_context["name_id"]}">{replaced_str.capitalize()}</a>'
-        text = original_text.replace(replaced_str.capitalize(), link)
+        text = original_text.replace(replaced_str, link)
         return text
 
     # if type is person, they can have multiple names that can be replaced by a link
     possible_names = get_all_possible_names_from_record(replace_context)
     text = recursive_replace_substings_with_links(
-        original_text, possible_names, replace_context["name_id"])
+        original_text, possible_names, replace_context["name_id"]
+    )
     return text
 
 
@@ -183,7 +198,7 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
 
     Returns:
-        dict: a record in which all mentionings of other records have been replaced by links 
+        dict: a record in which all mentionings of other records have been replaced by links
     """
     # we dont want to insert links for the record page we are currently on, so pop that entry from the map
     own_name = purify_name(new_record["name_id"])
@@ -208,11 +223,12 @@ def insert_links_into_infobox(new_record: dict, records_map: dict):
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
     """
     for word in generate_str_from_iterable(new_record.get("infobox", {})):
-        if word not in records_map:
+        # the name_ids we compare with are always lowercase (TODO make sure this is always the case!)
+        word_lowercase = word.lower()
+        if word_lowercase not in records_map:
             continue
-
         word = replace_text_with_links_for_records(
-            word, word, records_map[word])
+            word_lowercase, word_lowercase, records_map[word_lowercase])
 
 
 def insert_links_into_articles(new_record: dict, records_map: dict):

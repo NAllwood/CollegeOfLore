@@ -1,4 +1,3 @@
-
 import os
 import asyncio
 import logging
@@ -21,7 +20,9 @@ async def insert_lore():
     COLLECTION_NAME = "records"
     coll = db[COLLECTION_NAME]
 
-    for root, _, files in os.walk(os.path.join(basics.BASE_PATH, LORE_FOLDER_NAME), topdown=False):
+    for root, _, files in os.walk(
+        os.path.join(basics.BASE_PATH, LORE_FOLDER_NAME), topdown=False
+    ):
         for name in files:
             # article_category = next(
             #     (dir_name for dir_name in ALLOWED_DIRS if dir_name in root), None)
@@ -45,7 +46,8 @@ async def insert_lore():
                 LOG.info("Linking document")
                 document = linker.insert_links(document, known_records)
                 LOG.info(
-                    f"Inserting {file_name} into the database under {COLLECTION_NAME}")
+                    f"Inserting {file_name} into the database under {COLLECTION_NAME}"
+                )
                 await coll.insert_one(document)
             else:
                 LOG.info("Record already exists in the dabase!")
@@ -56,6 +58,6 @@ async def main():
     await insert_lore()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
