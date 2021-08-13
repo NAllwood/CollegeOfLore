@@ -34,7 +34,6 @@ async def insert_lore():
 
             # update known records after every insert
             known_records = await linker.get_known_records_map(db_client)
-
             file_name = os.path.splitext(name)[0]
 
             document = basics.load_yaml(os.path.join(root, name))

@@ -43,8 +43,8 @@ async def get_known_records_map(db_client: DBClient) -> dict:
         if name in records_map:
             records_map[name]["multi"] = True
             continue
-
-        records_map[name] = {"type": record.get("type", None), "multi": False}
+        record.update({"multi": False})
+        records_map[name] = record
     return records_map
 
 
