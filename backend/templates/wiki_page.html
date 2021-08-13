@@ -50,12 +50,12 @@
             <div class="section_entry_name">{{ translate(info_name) }}</div>
             <!--string/int representation-->
             {% if info_value is string or info_value is integer %}
-            <div class="section_entry_value">{{ info_value }}</div>
+            <div class="section_entry_value">{{ info_value|safe }}</div>
             <!--list representation-->
             {% elif info_value is sequence %}
             <ul class="no_bullets">
                 {% for point in info_value %}
-                <li>{{ point }}</li>
+                <li>{{ point|safe }}</li>
                 {% endfor %}
             </ul>
             {% endif %}
@@ -77,7 +77,7 @@
             <!--TODO translator function based on locale-->
             <h2 class="article_block_heading">{{ translate(article_name) }}</h2>
             <article class="article_block_text">
-                {{ article_text }}
+                {{ article_text|safe }}
             </article>
         </div>
     {% endif %}

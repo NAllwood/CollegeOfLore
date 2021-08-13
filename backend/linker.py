@@ -86,7 +86,7 @@ def get_all_possible_names_from_record(record: dict) -> set:
     possible_names.add(
         " ".join(
             [name.capitalize() for name in record.get("names", [])]
-            + ([record["last_name"].capitalize()]
+            + ([record["last_name"]]
                if record.get("last_name") else [])
         )
     )
@@ -94,7 +94,7 @@ def get_all_possible_names_from_record(record: dict) -> set:
     possible_names.add(
         " ".join(
             [record.get("names", [""])[0].capitalize()]
-            + ([record["last_name"].capitalize()]
+            + ([record["last_name"]]
                if record.get("last_name") else [])
         )
     )
@@ -118,10 +118,8 @@ def get_longest_matching_substring(text: str, substrings: Iterable) -> Tuple[str
         Tuple[str, int]: longest match as string + its index in the text or (None, -1)
     """
     subtexts = sorted(substrings, key=len)
-    print(subtexts)
     longest_subtext = None
     longest_index = -1
-
     for subtext in subtexts:
         found_index = text.find(subtext)
         # if we match something for the first time
@@ -152,15 +150,13 @@ def recursive_replace_substings_with_links(
     if not longest_matching_substring:
         return original_text
 
-    link = f'<a href="records/{resource_name}">{longest_matching_substring}</a>'
+    link = f'<a href="{resource_name}">{longest_matching_substring}</a>'
     pre_text, _, post_text = original_text.partition(
         longest_matching_substring)
-    return (
-        pre_text
+    return (pre_text
         + link
         + recursive_replace_substings_with_links(post_text, substings, resource_name)
     )
-
 
 # TODO multi
 def replace_text_with_links_for_records(
@@ -178,7 +174,7 @@ def replace_text_with_links_for_records(
     """
     # if the type of the found record is not "person", replace found mentions of the existing record with a link
     if replace_context["type"] != "person":
-        link = f'<a href="records/{replace_context["name_id"]}">{replaced_str.capitalize()}</a>'
+        link = f'<a href="{replace_context["name_id"]}">{replaced_str.capitalize()}</a>'
         text = original_text.replace(replaced_str, link)
         return text
 
@@ -204,8 +200,8 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
     own_name = purify_name(new_record["name_id"])
     map_entry = records_map.pop(own_name, None)
 
-    insert_links_into_infobox(new_record, records_map)
-    insert_links_into_articles(new_record, records_map)
+    insert_links_into_infobox(new_record.get("infobox", {}), records_map)
+    insert_links_into_articles(new_record.get("articles"), records_map)
 
     # if there was no entry in the map (completely new record) then we don't have to restore.
     # TODO Update map function should be called after inserts that uses the DB so we get the _id of the new record in the map
@@ -215,35 +211,55 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
     return new_record
 
 
-def insert_links_into_infobox(new_record: dict, records_map: dict):
-    """Inserts links only into the 'infobox' part of records
+def insert_links_into_infobox(it: Iterable, records_map: dict):
+    """Recursively Inserts links into any iterable (used for the 'infobox' part of records)
 
     Args:
         new_record (dict): the record in which the links should be inserted
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
     """
-    for word in generate_str_from_iterable(new_record.get("infobox", {})):
-        # the name_ids we compare with are always lowercase (TODO make sure this is always the case!)
-        word_lowercase = word.lower()
-        if word_lowercase not in records_map:
-            continue
-        word = replace_text_with_links_for_records(
-            word_lowercase, word_lowercase, records_map[word_lowercase])
+    if isinstance(it, dict):
+        for key, value in it.items():
+            it[key] = insert_links_into_infobox(value, records_map)
+        return it
+
+    if isinstance(it, list):
+        for index, entry in enumerate(it):
+            it[index] = insert_links_into_infobox(entry, records_map)
+        return it
+
+    if isinstance(it, str):
+        word = it.lower()
+        if word not in records_map:
+            return it
+        return replace_text_with_links_for_records(word, word, records_map[word])
+
+    if isinstance(it, int) or isinstance(it, float):
+        return str(it)
 
 
-def insert_links_into_articles(new_record: dict, records_map: dict):
+def insert_links_into_articles(articles: dict, records_map: dict):
     """Inserts links only into the 'articles' part of records
 
     Args:
-        new_record (dict): the record in which the links should be inserted
+        articles (dict): amapping of titles to text
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
     """
-    for article in new_record.get("articles", []):
-        for text in article:
-            # go through every entry of known records and replace each mention with a link
-            for key, items in records_map.items():
-                # check if the purified unique name of another record can be found in the text
-                if key not in text and key.capitalize() not in text:
-                    continue
+    # directly access artcles with the key because we want to continuously change articles
+    # (build on prev replacements), not a static copy
+    if not articles:
+        return
 
-                text = replace_text_with_links_for_records(text, key, items)
+    for title in articles.keys():
+        # (going through it this way makes more sense than going through every word in the article
+        # (as long as there are fewer db entries than average words in an article))
+        # go through every entry of known records and replace each mention with a link
+        for key, replace_context in records_map.items():
+            # check if the purified unique name of another record can be found in the text
+            # capitalize because we only want to replace capitalized words (names)
+            article = articles.get(title, "")
+            reference_word = key.capitalize()
+            if not article or reference_word not in article:
+                continue
+
+            articles[title] = replace_text_with_links_for_records(article, reference_word, replace_context)
