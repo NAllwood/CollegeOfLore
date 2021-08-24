@@ -25,8 +25,6 @@ class Application(web.Application):
         self.load_plugins()
         routes.register(self)
         setup_logging()
-        # probably needs to happen AFTER "load_plugins" to use underlying database clients
-        self.on_startup.append(connect_db_clients)
         # di.GLOBAL_SCOPE = self
 
     def load_config(self, config):
@@ -42,15 +40,14 @@ class Application(web.Application):
 
     def load_plugins(self):
         LOG.info("loading plugins")
-        # creates mongo client for each connection specified in config (creates client and appends it to app)
+        # creates mongo client for each connection specified in config
+        # not using cleanup context because
         self.on_startup.append(mongo.enable)
         self.on_cleanup.append(mongo.disable)
 
-    #     # wrapped db connection in "LoreClient"
-    #     # self.cleanup_ctx.append(mongo.enable)
-    #     if debug:
-    #         # self.cleanup_ctx.append(blower_test_server.enable)
-    #         pass
+        # creates client wrappers and appends them to app
+        # probably needs to happen AFTER enabling underlying db clinets (mongo)
+        self.on_startup.append(self.connect_db_clients)
 
     def setup_attributes(self):
         # needed for local loading of templates, statics, ...
@@ -59,11 +56,8 @@ class Application(web.Application):
         # needed like this for builtin jinja2 static lookup function
         self["static_root_url"] = "/static"
 
-        # needed to store all (abstracted) database clients
+        # needed to store all (abstracted) database clients (set in load_plugins)
         self.db_clients = {}
-
-        # needed for auto insering links into templates. fetches all records from db (projected)
-        # self.linking_map = linker.get_known_records_map()
 
     def setup_templating(self):
         loader = jinja2.FileSystemLoader(os.path.join(BASE_PATH, "templates/"))
@@ -82,12 +76,11 @@ class Application(web.Application):
         translate = partial(lang.translate, locales.get(language, {}))
         env.globals.update(translate=translate)
 
-
-async def connect_db_clients(app: web.Application):
-    """create a new DBClient that abstacts from the actual db used for each connection"""
-    # currently mongo only
-    for mongo_name in app.config["mongodb"].keys():
-        MongoClient(app, mongo_name)
+    async def connect_db_clients(self, app: web.Application):
+        """create a new DBClient that abstacts from the actual db used for each connection"""
+        # currently mongo only
+        for mongo_name in app.config["mongodb"].keys():
+            MongoClient(app, mongo_name)
 
 
 # used for aiohttp-devtools

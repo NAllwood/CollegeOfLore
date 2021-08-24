@@ -1,6 +1,5 @@
 import logging
-import os
-import yaml
+from bson import ObjectId
 import typing
 from aiohttp import web
 
@@ -43,12 +42,14 @@ async def get_record_context(request: web.Request) -> typing.Optional[dict]:
         dict/None: a dict containing the article information, or None
     """
 
-    resource_category = request.match_info.get("resource_category")
-    record_name_id = request.match_info.get("name")
-
-    if not resource_category or not record_name_id:
+    record_id = request.match_info.get("identifier")
+    if not record_id:
         return {}
 
+    filter = {"_id": record_id}
+    if not ObjectId.is_valid(record_id):
+        filter = {"name_id": record_id}
+
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)
-    record = await request.app.db_clients["default"].find({"name_id": record_name_id})
+    record = await request.app.db_clients["default"].find(filter)
     return record

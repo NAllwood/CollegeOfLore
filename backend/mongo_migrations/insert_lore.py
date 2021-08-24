@@ -24,14 +24,6 @@ async def insert_lore():
         os.path.join(basics.BASE_PATH, LORE_FOLDER_NAME), topdown=False
     ):
         for name in files:
-            # article_category = next(
-            #     (dir_name for dir_name in ALLOWED_DIRS if dir_name in root), None)
-            # if not article_category:
-            #     LOG.warn(
-            #         f"Found file with invalid category at '{root} /{name}'. Skipping this.")
-            #     continue
-            # collection_name = article_category
-
             # update known records after every insert
             known_records = await linker.get_known_records_map(db_client)
             file_name = os.path.splitext(name)[0]

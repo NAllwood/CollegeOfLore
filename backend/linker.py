@@ -86,16 +86,14 @@ def get_all_possible_names_from_record(record: dict) -> set:
     possible_names.add(
         " ".join(
             [name.capitalize() for name in record.get("names", [])]
-            + ([record["last_name"]]
-               if record.get("last_name") else [])
+            + ([record["last_name"]] if record.get("last_name") else [])
         )
     )
     # first and last name
     possible_names.add(
         " ".join(
             [record.get("names", [""])[0].capitalize()]
-            + ([record["last_name"]]
-               if record.get("last_name") else [])
+            + ([record["last_name"]] if record.get("last_name") else [])
         )
     )
     # all first and second names e.g. "Nevin Myron"
@@ -151,14 +149,17 @@ def recursive_replace_substings_with_links(
         return original_text
 
     link = f'<a href="{resource_name}">{longest_matching_substring}</a>'
-    pre_text, _, post_text = original_text.partition(
-        longest_matching_substring)
-    return (pre_text
+    pre_text, _, post_text = original_text.partition(longest_matching_substring)
+    return (
+        pre_text
         + link
         + recursive_replace_substings_with_links(post_text, substings, resource_name)
     )
 
+
 # TODO multi
+
+
 def replace_text_with_links_for_records(
     original_text: str, replaced_str: str, replace_context: dict
 ):
@@ -200,8 +201,15 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
     own_name = purify_name(new_record["name_id"])
     map_entry = records_map.pop(own_name, None)
 
-    insert_links_into_infobox(new_record.get("infobox", {}), records_map)
-    insert_links_into_articles(new_record.get("articles"), records_map)
+    _, linked_record_ids_info = insert_links_into_infobox(
+        new_record.get("infobox", {}), records_map
+    )
+    _, linked_record_ids_articles = insert_links_into_articles(
+        new_record.get("articles"), records_map
+    )
+
+    new_record["linked_records"] = linked_record_ids_info
+    new_record["linked_records"].extend(linked_record_ids_articles)
 
     # if there was no entry in the map (completely new record) then we don't have to restore.
     # TODO Update map function should be called after inserts that uses the DB so we get the _id of the new record in the map
@@ -211,44 +219,65 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
     return new_record
 
 
-def insert_links_into_infobox(it: Iterable, records_map: dict):
+def insert_links_into_infobox(it: Iterable, records_map: dict) -> Tuple[Iterable, list]:
     """Recursively Inserts links into any iterable (used for the 'infobox' part of records)
 
     Args:
         new_record (dict): the record in which the links should be inserted
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
+
+    Returns:
+        a tuple consisting of the initial Iterable with replaced texts, a list containing the ObjectIDs of all DB entries that were linked to
     """
+    linked_ids = []
     if isinstance(it, dict):
         for key, value in it.items():
-            it[key] = insert_links_into_infobox(value, records_map)
-        return it
+            new_item, new_ids = insert_links_into_infobox(value, records_map)
+            it[key] = new_item
+            linked_ids.extend(new_ids)
+        return it, linked_ids
 
     if isinstance(it, list):
         for index, entry in enumerate(it):
-            it[index] = insert_links_into_infobox(entry, records_map)
-        return it
+            new_entry, new_ids = insert_links_into_infobox(entry, records_map)
+            it[index] = new_entry
+            linked_ids.extend(new_ids)
+        return it, linked_ids
 
     if isinstance(it, str):
         word = it.lower()
         if word not in records_map:
-            return it
-        return replace_text_with_links_for_records(word, word, records_map[word])
+            return (it, linked_ids)
+        linked_ids.append(records_map[word].get("_id"))
+        return (
+            replace_text_with_links_for_records(word, word, records_map[word]),
+            linked_ids,
+        )
 
     if isinstance(it, int) or isinstance(it, float):
-        return str(it)
+        return str(it), linked_ids
+
+    return None, linked_ids
 
 
-def insert_links_into_articles(articles: dict, records_map: dict):
+def insert_links_into_articles(
+    articles: dict, records_map: dict
+) -> Tuple[Iterable, list]:
     """Inserts links only into the 'articles' part of records
 
     Args:
         articles (dict): amapping of titles to text
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
+
+    Returns:
+        a tuple consisting of the initial Iterable with replaced texts, a list containing the ObjectIDs of all DB entries that were linked to
     """
     # directly access artcles with the key because we want to continuously change articles
     # (build on prev replacements), not a static copy
     if not articles:
         return
+
+    linked_ids = []
 
     for title in articles.keys():
         # (going through it this way makes more sense than going through every word in the article
@@ -262,4 +291,9 @@ def insert_links_into_articles(articles: dict, records_map: dict):
             if not article or reference_word not in article:
                 continue
 
-            articles[title] = replace_text_with_links_for_records(article, reference_word, replace_context)
+            articles[title] = replace_text_with_links_for_records(
+                article, reference_word, replace_context
+            )
+            linked_ids.append(replace_context.get("_id"))
+
+    return articles, linked_ids

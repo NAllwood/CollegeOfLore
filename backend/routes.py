@@ -1,9 +1,8 @@
 import logging
 import os
 import prometheus_async.aio
-import functools
 from aiohttp import web
-from . import handlers
+from backend.handlers import favicon, index, records
 
 
 LOG = logging.getLogger(__name__)
@@ -13,9 +12,13 @@ def register(app):
     routes = web.RouteTableDef()
 
     routes.get("/metrics")(prometheus_async.aio.web.server_stats)
-    routes.get("/")(handlers.index_handler)
-    routes.get("/favicon.ico")(handlers.favicon_handler)
-    routes.get("/{resource_category}/{name}")(handlers.general_handler)
+    routes.get("/")(index.index_handler)
+    routes.get("/favicon.ico")(favicon.favicon_handler)
+
+    routes.get("/records/{identifier}")(records.get)
+    routes.post("/records")(records.post)
+    routes.put("/records/{record_id}")(records.put)
+    routes.delete("/records/{record_id}")(records.delete)
 
     app.router.add_static(
         "/static",

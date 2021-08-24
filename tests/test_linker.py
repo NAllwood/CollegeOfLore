@@ -2,6 +2,7 @@ import pytest
 import yaml
 import os
 from backend import linker
+from bson import ObjectId
 
 ## Fixtures ##
 
@@ -53,12 +54,17 @@ def replace_context_person():
 @pytest.fixture
 def replace_context_nolen():
     return {
-        "umaron": {"type": "location", "name_id": "umaron"},
+        "umaron": {
+            "type": "location",
+            "name_id": "umaron",
+            "_id": ObjectId("611be36d862be82b4a41ee68"),
+        },
         "garrett": {
             "type": "person",
             "names": ["Garrett"],
             "last_name": "von Danamark",
             "name_id": "garrett",
+            "_id": ObjectId("666f6f2d6261722d71757578"),
         },
         "nolen": {
             "type": "person",
@@ -66,6 +72,7 @@ def replace_context_nolen():
             "last_name": "Silverbridge",
             "name_id": "nolen2",
             "multi": True,
+            "_id": ObjectId("0123456789ab0123456789ab"),
         },
     }
 
@@ -125,8 +132,7 @@ def test_generate_str_from_iterable(example_record, expected_strings_in_example_
 
 def test_get_all_possible_names_from_record(nolen_record, nolen_possible_names):
     assert (
-        linker.get_all_possible_names_from_record(
-            nolen_record) == nolen_possible_names
+        linker.get_all_possible_names_from_record(nolen_record) == nolen_possible_names
     )
 
 
@@ -145,8 +151,7 @@ def test_get_all_possible_names_from_record(nolen_record, nolen_possible_names):
     ],
 )
 def test_get_longest_matching_substring(input_text, expected, nolen_possible_names):
-    result = linker.get_longest_matching_substring(
-        input_text, nolen_possible_names)
+    result = linker.get_longest_matching_substring(input_text, nolen_possible_names)
     assert result == expected
 
 
@@ -221,20 +226,27 @@ def test_replace_text_of_record_not_person(input, expected, replace_context_not_
 
 def test_insert_links_into_infobox(nolen_record, replace_context_nolen):
     assert nolen_record["infobox"]["biographical_info"]["origin"] == "Umaron"
-    linker.insert_links_into_infobox(nolen_record["infobox"], replace_context_nolen)
+    _, linked_ids = linker.insert_links_into_infobox(
+        nolen_record["infobox"], replace_context_nolen
+    )
     assert (
         nolen_record["infobox"]["biographical_info"]["origin"]
         == '<a href="umaron">Umaron</a>'
     )
 
+    assert ObjectId("611be36d862be82b4a41ee68") in linked_ids
+
 
 def test_insert_links_into_articles(nolen_record, replace_context_nolen):
     assert "Garrett von Danamark" in nolen_record["articles"]["relationships"]
-    linker.insert_links_into_articles(nolen_record["articles"], replace_context_nolen)
+    _, linked_ids = linker.insert_links_into_articles(
+        nolen_record["articles"], replace_context_nolen
+    )
     assert (
         '<a href="garrett">Garrett von Danamark</a>'
         in nolen_record["articles"]["relationships"]
     )
+    assert ObjectId("666f6f2d6261722d71757578") in linked_ids
 
 
 def test_insert_links(nolen_record, replace_context_nolen):
@@ -252,5 +264,9 @@ def test_insert_links(nolen_record, replace_context_nolen):
         '<a href="garrett">Garrett von Danamark</a>'
         in nolen_record["articles"]["relationships"]
     )
+    assert ObjectId("666f6f2d6261722d71757578") in nolen_record["linked_records"]
+    assert ObjectId("611be36d862be82b4a41ee68") in nolen_record["linked_records"]
+
     # don't link to own page
     assert nolen_record["articles"]["description"].find("Nolen") == 0
+    assert ObjectId("0123456789ab0123456789ab") not in nolen_record["linked_records"]
