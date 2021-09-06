@@ -51,9 +51,9 @@ html[data-theme='light'] {
 }
 
 .theme-toggle {
-    position: fixed;
+    position: absolute;
     right: 20px;
-    top: 20px;
+    top: 10px;
     background: var(--primary_color_dark);
     color:var(--on_primary_color);
     padding: 10px;
@@ -116,7 +116,7 @@ body {
 }
 
 .content {
-  margin: 8em;
+  margin: min(8vw,8em);
   background-color: var(--surface_color);
   color: var(--on_background_color);
   position: relative;
@@ -281,4 +281,7 @@ body {
   color:inherit;
 }
 
+.article_block {
+  min-width: 16em;
+}
 

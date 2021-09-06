@@ -2,7 +2,7 @@ import logging
 import os
 import prometheus_async.aio
 from aiohttp import web
-from backend.handlers import favicon, index, records
+from backend.api.handlers import favicon, index, records
 
 
 LOG = logging.getLogger(__name__)

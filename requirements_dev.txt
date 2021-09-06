@@ -1,5 +1,6 @@
 aiohttp==3.7.4.post0
 aiohttp-devtools==0.13.1
+aiohttp_session==2.9.0
 aiohttp-jinja2==1.4.2
 autopep8==1.5.7
 click==8.0.1
@@ -16,3 +17,5 @@ PyYAML==5.4.1
 toml==0.10.2
 typing-extensions==3.10.0.0
 yarl==1.6.3
+PyJWT==2.1.0
+cryptography==3.2.1

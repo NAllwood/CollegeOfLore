@@ -4,3 +4,12 @@ mongodb:
     port: 27017
     db: 'iuun'
     serverSelectionTimeoutMS: 2500
+
+cookie:
+  secret: 5.havana.JOURNEY.write_
+
+session:
+  secret: '6lMwyhnmbGYbe6fwWLJ2QMW8Y9O__sNKQ8SyrhrsSeA='
+
+settings:
+  permit_all: False

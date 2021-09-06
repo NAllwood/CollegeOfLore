@@ -5,11 +5,16 @@ import yaml
 import os
 import jinja2
 import aiohttp_jinja2
+import base64
 from functools import partial
 from aiohttp import web
-from . import routes, mongo, linker
+from aiohttp_session import setup
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
+from . import mongo
+from backend.api import routes
 from backend.db_clients.mongo_client import MongoClient
 from backend import lang
+from backend.api import middlewares
 
 
 BASE_PATH = os.path.dirname(__file__)
@@ -23,6 +28,8 @@ class Application(web.Application):
         self.setup_attributes()
         self.setup_templating()
         self.load_plugins()
+        self.setup_sessions()
+        self.add_middlewares()
         routes.register(self)
         setup_logging()
         # di.GLOBAL_SCOPE = self
@@ -76,6 +83,16 @@ class Application(web.Application):
         translate = partial(lang.translate, locales.get(language, {}))
         env.globals.update(translate=translate)
 
+    def setup_sessions(self):
+        # session setup. needs custom encoder+decoder to store object ids
+        fernet_key = self.config['session']['secret']
+        secret_key = base64.urlsafe_b64decode(fernet_key)
+        encrypted_storage = EncryptedCookieStorage(secret_key)
+        setup(self, encrypted_storage)
+
+    def add_middlewares(self):
+        self.middlewares.extend([middlewares.auth_middleware])
+
     async def connect_db_clients(self, app: web.Application):
         """create a new DBClient that abstacts from the actual db used for each connection"""
         # currently mongo only
@@ -84,8 +101,6 @@ class Application(web.Application):
 
 
 # used for aiohttp-devtools
-
-
 def create_app(loop=None, config=None, debug=False):
     if loop is None:
         loop = asyncio.get_event_loop()

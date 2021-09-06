@@ -2,21 +2,21 @@ import logging
 import aiohttp_jinja2
 from aiohttp import web
 from bson import ObjectId
-from backend import context_processors
-from backend import linker
-from . import errors
+from backend.api import linker, context_processor
+from backend.api.handlers import error_pages
+from backend.api.errors import RequestError
 
 LOG = logging.getLogger(__name__)
 
 
 async def get(request: web.Request) -> web.Response:
-    context = await context_processors.get_record_context(request)
+    context = await context_processor.get_context(request)
     if not context:
-        return errors.get_404_page(request)
+        return error_pages.get_error_page(request, RequestError.not_found)
 
     record_type = context.get("type")
     if not record_type:
-        return errors.get_500_page(request)
+        return error_pages.get_error_page(request, RequestError.corrupt)
 
     return aiohttp_jinja2.render_template(
         "{}.html".format(record_type), request, context
@@ -32,8 +32,8 @@ async def post(request: web.Request) -> web.Response:
     data = linker.insert_links(data, known_records)
     result = await request.app.db_clients["default"].store(data)
     if not result:
-        return web.Response(status=500)
-    return web.json_response({"data": result}, status=201)
+        return RequestError.service_unavailable
+    return {"data": result, "status": 201}
 
 
 async def put(request: web.Request) -> web.Response:
@@ -50,8 +50,8 @@ async def put(request: web.Request) -> web.Response:
     data = linker.insert_links(data, known_records)
     result = await request.app.db_clients["default"].update(filter, data)
     if not result:
-        return web.Response(status=400)
-    return web.json_response({"data": result}, status=200)
+        return RequestError.service_unavailable
+    return {"data": result, "status": 200}
 
 
 async def delete(request: web.Request) -> web.Response:
@@ -68,5 +68,5 @@ async def delete(request: web.Request) -> web.Response:
     data = linker.insert_links(data, known_records)
     result = await request.app.db_clients["default"].update(filter, data)
     if not result:
-        return web.Response(status=400)
-    return web.json_response({"data": result}, status=200)
+        return RequestError.service_unavailable
+    return {"data": result, "status": 200}

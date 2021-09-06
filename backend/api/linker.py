@@ -1,7 +1,6 @@
 import logging
-import copy
 from posixpath import dirname
-from typing import Any, Generator, Iterable, Tuple
+from typing import Any, Iterable, Tuple
 from backend.db_clients.base_client import DBClient
 
 LOG = logging.getLogger(__name__)
@@ -149,7 +148,8 @@ def recursive_replace_substings_with_links(
         return original_text
 
     link = f'<a href="{resource_name}">{longest_matching_substring}</a>'
-    pre_text, _, post_text = original_text.partition(longest_matching_substring)
+    pre_text, _, post_text = original_text.partition(
+        longest_matching_substring)
     return (
         pre_text
         + link

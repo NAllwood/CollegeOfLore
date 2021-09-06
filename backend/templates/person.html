@@ -17,6 +17,7 @@
 {% endblock %}
 
 {% block first_article %}
+{#
 <article>
     <!-- Name -->
     {{ names[0] }}
@@ -25,7 +26,7 @@
     {% if infobox.biographical_info.epithet|length == 1 and infobox.biographical_info.epithet[0] != None %}
     "{{ infobox.biographical_info.epithet[0] }}"
 
-    <!-- Epithet rmany -->
+    <!-- Epithet many -->
     {% elif infobox.biographical_info.epithet|length > 1 %}
     ( "{{ infobox.biographical_info.epithet[0] }}"
     {% for item in infobox.biographical_info.epithet[1:] %}
@@ -51,6 +52,7 @@
     , manchen bekannt als {{ infobox.biographical_info.alias }},
     {% endif %}
 </article>
+#}
 {% endblock %}
 
 
