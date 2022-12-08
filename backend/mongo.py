@@ -25,7 +25,6 @@ def test_connection(app: web.Application):
 
 
 async def enable(app: web.Application):
-    print("in enable!")
     if "mongodb" not in app.config:
         raise AttributeError("mongodb config is missing")
 

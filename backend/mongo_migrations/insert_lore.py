@@ -3,7 +3,7 @@ import asyncio
 import logging
 from backend.mongo_migrations import migration_basics as basics
 from backend.mongo_migrations.migration_mongo_client import MigrationMongoClient
-from backend import linker
+from backend.api import linker
 
 
 LOG = logging.getLogger(__name__)

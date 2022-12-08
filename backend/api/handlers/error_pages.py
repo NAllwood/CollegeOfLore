@@ -7,8 +7,8 @@ from backend.api.errors import RequestError
 error_msg_switch = {
     400: "You seem to be speaking a dialect of some exotic language, that our scribes sadly cannot understand. Maybe you can try again in Common or Elvish?",
     401: "Maybe we can help you find the scrolls you seek, but first let me ask: Who are you?",
-    403: "The knowlede you seek is forbidden!",
-    404: "Sadly, we do not have the scrolls you seek. Maybe if you stuble upon them during your travels, you can donate them to the college?",
+    403: "The knowledge you seek is forbidden!",
+    404: "Sadly, we do not have the scrolls you seek. Maybe if you stumble upon them during your travels, you can donate them to the college?",
     410: "The college has the scrolls you are looking for but sadly they are half burnt and barely readable. We will dispose of them as soon as possible.",
     500: "When trying to fetch the Lore you requested, one of our students actually managed to collapse the whole corridor! We will try to get him out of there and bring you your scrolls as soon as possible. Maybe you'll find other stories interesting in the meantime?",
     503: "The college is currently closed for maintenance. We will open up again shortly"

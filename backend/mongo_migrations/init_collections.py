@@ -30,6 +30,59 @@ LOG = logging.getLogger(__name__)
         }
         }
     })
+    
+    db.createCollection("users", {
+        validator: {$jsonSchema: {
+            bsonType: "object",
+            required: ["name", "hashed_pw", "lores_owned", "lores_access"],
+            properties: {
+                name: {
+                    bsonType: "string",
+                    description: "username"
+                },
+                hashed_pw: {
+                    bsonType: "string",
+                    description: "hashed and salted bcrypt password"
+                },
+                lores_owned: {
+                    bsonType: "array",
+                    description: "a list of lores that the user owns"
+                },
+                lores_access: {
+                    bsonType: "array",
+                    description: "a list of lores that the user can access"
+                },
+                "is_admin": {
+                    bsonType: "bool",
+                    description: "states whether user is an admin of the system"
+                }
+            }
+        }
+        }
+    })
+
+    db.createCollection("lores", {
+        validator: {$jsonSchema: {
+            bsonType: "object",
+            required: ["name", "masters", "members"],
+            properties: {
+                name: {
+                    bsonType: "string",
+                    description: "name of the lore (world/game/table)"
+                },
+
+                masters: {
+                    bsonType: "array",
+                    description: "a list referencing the users that are masters of this lore"
+                },
+                members: {
+                    bsonType: "array",
+                    description: "a list referencing the users that share this lore"
+                },
+            }
+        }
+        }
+    })
     """
 
 

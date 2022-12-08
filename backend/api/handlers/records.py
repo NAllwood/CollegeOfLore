@@ -40,7 +40,7 @@ async def put(request: web.Request) -> web.Response:
     data = await request.json()
     record_id = request.match_info.get("record_id")
     if not record_id or not ObjectId.is_valid(record_id):
-        return web.Response(status=404)
+        return RequestError.malformed_request
 
     filter = {"_id": record_id}
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)

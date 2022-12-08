@@ -7,12 +7,30 @@
 {% endblock %}
 
 {% block startup %}
-<div id="title">Indextitle</div>
+<div id="title">Errorpage</div>
 {% endblock %}
 
 {% block content %}
-<h1>ERROR</h1>
-{{ error_code }} {{ error_msg }}
+<h1>ERROR: {{ error_code }} | {{ error }}</h1>
+
+{{ error_msg }}
+
+{% if error == "NO_AUTHCOOKIE" %}
+{% include 'login.html' %}
+{% endif %}
+
+{% if error == "NO_AUTHCOOKIE2" %}
+<form action="/login" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" value="" autofocus />
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" value="" />
+
+    <input type="submit" value="login" />
+</form>
+{% endif %}
+
 
 
 {% endblock %}

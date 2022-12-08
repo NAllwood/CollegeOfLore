@@ -16,13 +16,23 @@
 </head>
 
 <body>
-    <header>
-        <span id="theme-toggle" class="theme-toggle"></span>
-    </header>
+    <div class="box">
+        <header class="header">
+            <span id="theme-toggle" class="theme-toggle"></span>
+            {% block header %}
+            {% endblock %}
+        </header>
 
-    <div id="content" class="content">
-        {% block content %}
-        {% endblock %}
+        <div id="content" class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <div class="footer">
+            Footer
+            {% block footer %}
+            {% endblock %}
+        </div>
     </div>
 
 

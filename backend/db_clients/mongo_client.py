@@ -1,5 +1,5 @@
+import datetime
 from backend.db_clients.base_client import DBClient
-from backend import mongo
 from aiohttp import web
 from motor.motor_asyncio import AsyncIOMotorCollection
 from bson import ObjectId
@@ -25,48 +25,60 @@ class MongoClient(DBClient):
         self.db = app[conn_name][db_name]
         app.db_clients[mongo_name] = self
 
+
     async def store(self, data: dict, **kwargs) -> Optional[ObjectId]:
         collection = kwargs.get("coll", self.default_coll)
+        data.update({"creation_date": datetime.datetime.utcnow()})
         result = await self.db[collection].insert_one(data)
         if result.acknowledged:
             return result.inserted_id
         return None
 
-    async def find(self, *args, **kwargs) -> Optional[dict]:
+    async def find(self, filter, *args, **kwargs) -> Optional[dict]:
         collection = kwargs.get("coll", self.default_coll)
-        return await self.db[collection].find_one(*args, **kwargs)
+        return await self.db[collection].find_one(filter, *args, **kwargs)
 
-    async def find_many(self, *args, **kwargs) -> list:
+    async def find_many(self, filter, *args, **kwargs) -> list:
         collection = kwargs.get("coll", self.default_coll)
-        records = []
-        async for document in self.db[collection].find(*args, **kwargs):
-            records.append(document)
-        return records
+        documents = []
+        async for document in self.db[collection].find(filter, *args, **kwargs):
+            documents.append(document)
+        return documents
 
-    async def delete(self, *args, **kwargs) -> Optional[int]:
+    async def delete(self, filter, data, *args, **kwargs) -> Optional[int]:
         collection = kwargs.get("coll", self.default_coll)
-        result = await self.db[collection].delete_one(*args, **kwargs)
+        if kwargs.pop("false_delete", False):
+            data.update({"deletion_date": datetime.datetime.utcnow()})
+            return await self.update(filter, data, *args, **kwargs)
+
+        result = await self.db[collection].delete_one(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.deleted_count
         return None
 
-    async def delete_many(self, *args, **kwargs) -> Optional[int]:
+    async def delete_many(self, filter, data, *args, **kwargs) -> Optional[int]:
         collection = kwargs.get("coll", self.default_coll)
-        result = await self.db[collection].delete_many(*args, **kwargs)
+        if kwargs.pop("false_delete", False):
+            data.update_many({"deletion_date": datetime.datetime.utcnow()})
+            return await self.update(filter, data, *args, **kwargs)
+        
+        result = await self.db[collection].delete_many(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.deleted_count
         return None
 
-    async def update(self, *args, **kwargs) -> Optional[int]:
+    async def update(self, filter, data, *args, **kwargs) -> Optional[int]:
         collection = kwargs.get("coll", self.default_coll)
-        result = await self.db[collection].update_one(*args, **kwargs)
+        data.update({"last_modified": datetime.datetime.utcnow()})
+        result = await self.db[collection].update_one(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.modified_count
         return None
 
-    async def update_many(self, *args, **kwargs) -> Optional[int]:
+    async def update_many(self, filter, data, *args, **kwargs) -> Optional[int]:
         collection = kwargs.get("coll", self.default_coll)
-        result = await self.db[collection].update_many(*args, **kwargs)
+        data.update({"last_modified": datetime.datetime.utcnow()})
+        result = await self.db[collection].update_many(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.modified_count
         return None

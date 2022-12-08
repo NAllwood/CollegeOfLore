@@ -16,6 +16,7 @@ class RequestError():
     no_cookie = {'status': 401, 'error': 'NO_AUTHCOOKIE'}
     expired_cookie = {'status': 401, 'error': 'EXPIRED_AUTHCOOKIE'}
 
+    failed_login = {'status': 400, 'error': "FAILED_LOGIN"}
 
 # class PintaError(RequestError):
 #     invalid_name = 'INVALID_NAME'

@@ -3,11 +3,16 @@ import jwt
 from aiohttp_session import get_session
 from aiohttp import web
 from asyncio import InvalidStateError
+from bson.json_util import dumps
 from .errors import RequestError
 from .handlers import error_pages
 
 LOG = logging.getLogger(__name__)
 
+
+def allow_unauth(func):
+    func.allow_unauth = True
+    return func
 
 async def _get_user_session(request: web.Request) -> dict:
     app = request.app
@@ -33,11 +38,6 @@ async def _get_user_session(request: web.Request) -> dict:
                             app.config['cookie']['secret'],
                             algorithms=['HS256'])
 
-        # TODO enforce expiration check
-        exp = cookie.get('exp')
-        if not exp:
-            return RequestError.expired_cookie
-
         user = cookie.get('user', {})
         user_id = user.get('id')
         user_name = user.get('name')
@@ -56,42 +56,35 @@ async def _get_user_session(request: web.Request) -> dict:
 
 async def auth_middleware(_, handler):
     async def middleware_handler(request: web.Request):
-        cookie = request.cookies.get('authtoken', None)
-        unauth_options = request.method == "OPTIONS" and cookie is None
+        resource_name = None if "/" not in request.path else request.path.split("/")[1]
 
-        if unauth_options:
-            LOG.info("Answering OPTIONS request without requiring authentication")
-            # Options requests are directly answered by aiohttp_cors
-            return await build_api_response(handler(request))
+        # OPTIONS requests are directly answered by aiohttp_cors
+        # no_auth_resources as /login or css+js should be available without auth
+        if not getattr(handler, "allow_unauth", False) and resource_name != "static":
+            try:
+                session = await _get_user_session(request)
+            except jwt.exceptions.ExpiredSignatureError:
+                LOG.error('Invalid Token: Expired Signature')
+                return build_api_response(RequestError.expired_signature)
+            except jwt.exceptions.InvalidSignatureError:
+                LOG.error('Invalid Token: Invalid Signature')
+                return build_api_response(RequestError.invalid_signature)
+            except jwt.exceptions.DecodeError:
+                LOG.error('Invalid Token: Decode Error')
+                return build_api_response(RequestError.invalid_token)
+            if not session:
+                LOG.error('Invalid Token: No session')
+                return build_api_response(RequestError.invalid_token)
+            if "error" in session:
+                return build_api_response(error_pages.get_error_page(request, session))
+            request['session'] = session
 
-        try:
-            session = await _get_user_session(request)
-        except jwt.exceptions.ExpiredSignatureError:
-            LOG.error('Invalid Token: Expired Signature')
-            return build_api_response(RequestError.expired_signature)
-        except jwt.exceptions.InvalidSignatureError:
-            LOG.error('Invalid Token: Invalid Signature')
-            return build_api_response(RequestError.invalid_signature)
-        except jwt.exceptions.DecodeError:
-            LOG.error('Invalid Token: Decode Error')
-            return build_api_response(RequestError.invalid_token)
-        if not session:
-            LOG.error('Invalid Token: No session')
-            return build_api_response(RequestError.invalid_token)
-        if "error" in session:
-            return build_api_response(error_pages.get_error_page(request, session))
-
-        request['session'] = session
         try:
             response = await handler(request)
         except InvalidStateError as e:
             LOG.exception('Invalid future state')
             return build_api_response(error_pages.get_error_page(request, RequestError.conflict))
 
-        # only store permissions in session as long as the backend handles the
-        # request. we dont want to overflow the response header
-        if session.get('permissions'):
-            del session['permissions']
         return build_api_response(response)
 
     return middleware_handler
@@ -118,6 +111,11 @@ def build_api_response(response: dict):
         return web.Response(headers=headers)
 
     data = response.get('data', None)
+    # let bson_util handle dumping the response data or aiohttp will complain that 
+    # bson ids are not json dumpable
+    if data:
+        data = dumps(data)
+        
     status = response.get('status', 400)
 
     payload = {
