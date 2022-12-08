@@ -25,7 +25,6 @@ class MongoClient(DBClient):
         self.db = app[conn_name][db_name]
         app.db_clients[mongo_name] = self
 
-
     async def store(self, data: dict, **kwargs) -> Optional[ObjectId]:
         collection = kwargs.get("coll", self.default_coll)
         data.update({"creation_date": datetime.datetime.utcnow()})
@@ -61,7 +60,7 @@ class MongoClient(DBClient):
         if kwargs.pop("false_delete", False):
             data.update_many({"deletion_date": datetime.datetime.utcnow()})
             return await self.update(filter, data, *args, **kwargs)
-        
+
         result = await self.db[collection].delete_many(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.deleted_count

@@ -148,8 +148,7 @@ def recursive_replace_substings_with_links(
         return original_text
 
     link = f'<a href="{resource_name}">{longest_matching_substring}</a>'
-    pre_text, _, post_text = original_text.partition(
-        longest_matching_substring)
+    pre_text, _, post_text = original_text.partition(longest_matching_substring)
     return (
         pre_text
         + link

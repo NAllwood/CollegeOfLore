@@ -51,7 +51,7 @@ class MigrationMongoClient(DBClient):
         if kwargs.pop("false_delete", False):
             data.update_many({"deletion_date": datetime.datetime.utcnow()})
             return await self.update(filter, data, *args, **kwargs)
-        
+
         result = await self.db[collection].delete_many(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.deleted_count

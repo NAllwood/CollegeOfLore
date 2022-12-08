@@ -1,22 +1,26 @@
-class RequestError():
-    malformed_request = {'status': 400, 'error': 'MALFORMED_REQUEST'}
-    unauthorized = {'status': 401, 'error': 'UNAUTHORIZED'}
-    forbidden = {'status': 403, 'error': 'FORBIDDEN'}
-    not_found = {'status': 404, 'error': 'CONTENT_NOT_FOUND'}
-    server_error = {'status': 500, 'error': 'INTERNAL_SERVER_ERROR'}
-    corrupt = {'status': 500, 'error': 'CORRUPT_DATA'}
-    service_unavailable = {'status': 503, 'error': 'SERVICE_UNAVILABLE'}
-    conflict = {'status': 409, 'error': 'CONFLICT',
-                'message': 'The request has been cancelled'}
+class RequestError:
+    malformed_request = {"status": 400, "error": "MALFORMED_REQUEST"}
+    unauthorized = {"status": 401, "error": "UNAUTHORIZED"}
+    forbidden = {"status": 403, "error": "FORBIDDEN"}
+    not_found = {"status": 404, "error": "CONTENT_NOT_FOUND"}
+    server_error = {"status": 500, "error": "INTERNAL_SERVER_ERROR"}
+    corrupt = {"status": 500, "error": "CORRUPT_DATA"}
+    service_unavailable = {"status": 503, "error": "SERVICE_UNAVILABLE"}
+    conflict = {
+        "status": 409,
+        "error": "CONFLICT",
+        "message": "The request has been cancelled",
+    }
 
-    expired_signature = {'status': 401, 'error': 'EXPIRED SIGNATURE'}
-    invalid_signature = {'status': 401, 'error': 'INVALID_SIGNATURE'}
-    invalid_token = {'status': 401, 'error': 'INVALID_TOKEN'}
+    expired_signature = {"status": 401, "error": "EXPIRED SIGNATURE"}
+    invalid_signature = {"status": 401, "error": "INVALID_SIGNATURE"}
+    invalid_token = {"status": 401, "error": "INVALID_TOKEN"}
 
-    no_cookie = {'status': 401, 'error': 'NO_AUTHCOOKIE'}
-    expired_cookie = {'status': 401, 'error': 'EXPIRED_AUTHCOOKIE'}
+    no_cookie = {"status": 401, "error": "NO_AUTHCOOKIE"}
+    expired_cookie = {"status": 401, "error": "EXPIRED_AUTHCOOKIE"}
 
-    failed_login = {'status': 400, 'error': "FAILED_LOGIN"}
+    failed_login = {"status": 400, "error": "FAILED_LOGIN"}
+
 
 # class PintaError(RequestError):
 #     invalid_name = 'INVALID_NAME'

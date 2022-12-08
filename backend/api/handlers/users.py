@@ -13,13 +13,14 @@ LOG = logging.getLogger(__name__)
 
 async def get(request: web.Request) -> web.Response:
     # TODO admin func
-   pass
+    pass
+
 
 @allow_unauth
 async def post(request: web.Request) -> web.Response:
     data = await request.json()
-    user_name = data['user_name']
-    password = data['password']
+    user_name = data["user_name"]
+    password = data["password"]
 
     if not user_name or not password:
         return error_pages.get_error_page(request, RequestError.malformed_request)
@@ -29,9 +30,9 @@ async def post(request: web.Request) -> web.Response:
         "name": user_name,
         "hashed_pw": hashed_pw,
         "lores_owned": [],
-        "lores_access": []
+        "lores_access": [],
     }
-    result =  await request.app.db_clients["default"].store(user, coll="users")
+    result = await request.app.db_clients["default"].store(user, coll="users")
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 200}

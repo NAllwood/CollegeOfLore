@@ -34,15 +34,14 @@ LOG = logging.getLogger(__name__)
 
 
 async def get_context(request: web.Request):
-    switcher = {
-        "records": get_record_context
-    }
+    switcher = {"records": get_record_context}
     resource_type = request.path.split("/")[1]
     if resource_type in switcher:
         return await switcher[resource_type](request)
 
     LOG.debug(
-        f"Returning empty context because no context processor was found for resource type '{resource_type}'")
+        f"Returning empty context because no context processor was found for resource type '{resource_type}'"
+    )
     return {}
 
 

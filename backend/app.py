@@ -85,7 +85,7 @@ class Application(web.Application):
 
     def setup_sessions(self):
         # session setup. needs custom encoder+decoder to store object ids
-        fernet_key = self.config['session']['secret']
+        fernet_key = self.config["session"]["secret"]
         secret_key = base64.urlsafe_b64decode(fernet_key)
         encrypted_storage = EncryptedCookieStorage(secret_key)
         setup(self, encrypted_storage)

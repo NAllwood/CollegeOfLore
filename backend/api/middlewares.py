@@ -14,6 +14,7 @@ def allow_unauth(func):
     func.allow_unauth = True
     return func
 
+
 async def _get_user_session(request: web.Request) -> dict:
     app = request.app
     session = await get_session(request)
@@ -21,32 +22,34 @@ async def _get_user_session(request: web.Request) -> dict:
         return session
 
     if app.config["settings"].get("permit_all"):
-        session['is_admin'] = True
+        session["is_admin"] = True
         # TODO make this client IP/MAC at least
-        session['user_id'] = "0"
-        session['user_name'] = "SUPERUSER"
+        session["user_id"] = "0"
+        session["user_name"] = "SUPERUSER"
         return session
 
     # no token present (anymore)
-    if not request.cookies.get('authtoken'):
-        LOG.error('No auth cookie set')
+    if not request.cookies.get("authtoken"):
+        LOG.error("No auth cookie set")
         return RequestError.no_cookie
 
     # reset session because token has changed
-    if session.get('raw_token') != request.cookies['authtoken']:
-        cookie = jwt.decode(request.cookies['authtoken'],
-                            app.config['cookie']['secret'],
-                            algorithms=['HS256'])
+    if session.get("raw_token") != request.cookies["authtoken"]:
+        cookie = jwt.decode(
+            request.cookies["authtoken"],
+            app.config["cookie"]["secret"],
+            algorithms=["HS256"],
+        )
 
-        user = cookie.get('user', {})
-        user_id = user.get('id')
-        user_name = user.get('name')
-        is_admin = cookie.get('is_admin', False)
+        user = cookie.get("user", {})
+        user_id = user.get("id")
+        user_name = user.get("name")
+        is_admin = cookie.get("is_admin", False)
 
-        session['raw_token'] = request.cookies['authtoken']
+        session["raw_token"] = request.cookies["authtoken"]
         session["user_id"] = user_id
-        session['is_admin'] = is_admin
-        session['user_name'] = user_name
+        session["is_admin"] = is_admin
+        session["user_name"] = user_name
 
         if not user_id and not is_admin:
             return None
@@ -64,26 +67,28 @@ async def auth_middleware(_, handler):
             try:
                 session = await _get_user_session(request)
             except jwt.exceptions.ExpiredSignatureError:
-                LOG.error('Invalid Token: Expired Signature')
+                LOG.error("Invalid Token: Expired Signature")
                 return build_api_response(RequestError.expired_signature)
             except jwt.exceptions.InvalidSignatureError:
-                LOG.error('Invalid Token: Invalid Signature')
+                LOG.error("Invalid Token: Invalid Signature")
                 return build_api_response(RequestError.invalid_signature)
             except jwt.exceptions.DecodeError:
-                LOG.error('Invalid Token: Decode Error')
+                LOG.error("Invalid Token: Decode Error")
                 return build_api_response(RequestError.invalid_token)
             if not session:
-                LOG.error('Invalid Token: No session')
+                LOG.error("Invalid Token: No session")
                 return build_api_response(RequestError.invalid_token)
             if "error" in session:
                 return build_api_response(error_pages.get_error_page(request, session))
-            request['session'] = session
+            request["session"] = session
 
         try:
             response = await handler(request)
         except InvalidStateError as e:
-            LOG.exception('Invalid future state')
-            return build_api_response(error_pages.get_error_page(request, RequestError.conflict))
+            LOG.exception("Invalid future state")
+            return build_api_response(
+                error_pages.get_error_page(request, RequestError.conflict)
+            )
 
         return build_api_response(response)
 
@@ -104,25 +109,26 @@ def build_api_response(response: dict):
         return response
 
     if response is None:
-        headers.update({
-            'Access-Control-Allow-Headers': 'content-type',
-            'Access-Control-Allow-Methods': 'POST, GET, DELETE, PUT, OPTIONS'
-        })
+        headers.update(
+            {
+                "Access-Control-Allow-Headers": "content-type",
+                "Access-Control-Allow-Methods": "POST, GET, DELETE, PUT, OPTIONS",
+            }
+        )
         return web.Response(headers=headers)
 
-    data = response.get('data', None)
-    # let bson_util handle dumping the response data or aiohttp will complain that 
+    data = response.get("data", None)
+    # let bson_util handle dumping the response data or aiohttp will complain that
     # bson ids are not json dumpable
     if data:
         data = dumps(data)
-        
-    status = response.get('status', 400)
+
+    status = response.get("status", 400)
 
     payload = {
-        'data': data,
-        'message': response.get('message', ''),
-        'error': response.get('error', None)
+        "data": data,
+        "message": response.get("message", ""),
+        "error": response.get("error", None),
     }
     # dumps = partial(json.dumps, default=map_from_bson)
-    return web.json_response(
-        payload, status=status, headers=headers)
+    return web.json_response(payload, status=status, headers=headers)
