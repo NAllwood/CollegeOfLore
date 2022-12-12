@@ -52,13 +52,13 @@ html[data-theme='light'] {
   --floating_bg_color: #d6d6d6;
   --floating_bg_color_hover: #c1c1c1;
 
-  --primary_color_1: #269891;
-  --primary_color_2: #30beb6;
-  --primary_color_3: #4cd2ca;
-  --primary_color_4: #72dcd5;
+  --primary_color_4: #269891;
+  --primary_color_3: #30beb6;
+  --primary_color_2: #4cd2ca;
+  --primary_color_1: #72dcd5;
 
-  --primary_color_2_hover: #2baba4;
-  --primary_color_3_hover: #35ccc3;
+  --primary_color_3_hover: #2baba4;
+  --primary_color_2_hover: #35ccc3;
 
   --contrast_color: #581d1d;
 
@@ -171,6 +171,8 @@ body {
   line-height: 1.6;
   font-size: 0.875em;
   overflow: auto;
+  max-width: 932px;
+  margin: 0 auto 0 8em;
 }
 
 .box .footer {

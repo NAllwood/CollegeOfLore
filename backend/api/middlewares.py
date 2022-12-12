@@ -6,6 +6,7 @@ from asyncio import InvalidStateError
 from bson.json_util import dumps
 from .errors import RequestError
 from .handlers import error_pages
+from urllib.parse import urlparse
 
 LOG = logging.getLogger(__name__)
 
@@ -18,41 +19,10 @@ def allow_unauth(func):
 async def _get_user_session(request: web.Request) -> dict:
     app = request.app
     session = await get_session(request)
-    if "is_admin" in session:
-        return session
 
-    if app.config["settings"].get("permit_all"):
-        session["is_admin"] = True
-        # TODO make this client IP/MAC at least
-        session["user_id"] = "0"
-        session["user_name"] = "SUPERUSER"
-        return session
-
-    # no token present (anymore)
-    if not request.cookies.get("authtoken"):
-        LOG.error("No auth cookie set")
-        return RequestError.no_cookie
-
-    # reset session because token has changed
-    if session.get("raw_token") != request.cookies["authtoken"]:
-        cookie = jwt.decode(
-            request.cookies["authtoken"],
-            app.config["cookie"]["secret"],
-            algorithms=["HS256"],
-        )
-
-        user = cookie.get("user", {})
-        user_id = user.get("id")
-        user_name = user.get("name")
-        is_admin = cookie.get("is_admin", False)
-
-        session["raw_token"] = request.cookies["authtoken"]
-        session["user_id"] = user_id
-        session["is_admin"] = is_admin
-        session["user_name"] = user_name
-
-        if not user_id and not is_admin:
-            return None
+    required_fileds = ["user_id", "user_name", "lores_owned", "lores_access"]
+    if not all([True if name in session.keys() else False for name in required_fileds]):
+        return RequestError.not_authenticated
 
     return session
 
@@ -64,20 +34,10 @@ async def auth_middleware(_, handler):
         # OPTIONS requests are directly answered by aiohttp_cors
         # no_auth_resources as /login or css+js should be available without auth
         if not getattr(handler, "allow_unauth", False) and resource_name != "static":
-            try:
-                session = await _get_user_session(request)
-            except jwt.exceptions.ExpiredSignatureError:
-                LOG.error("Invalid Token: Expired Signature")
-                return build_api_response(RequestError.expired_signature)
-            except jwt.exceptions.InvalidSignatureError:
-                LOG.error("Invalid Token: Invalid Signature")
-                return build_api_response(RequestError.invalid_signature)
-            except jwt.exceptions.DecodeError:
-                LOG.error("Invalid Token: Decode Error")
-                return build_api_response(RequestError.invalid_token)
+            session = await _get_user_session(request)
             if not session:
-                LOG.error("Invalid Token: No session")
-                return build_api_response(RequestError.invalid_token)
+                LOG.error("Invalid Session: No session")
+                return build_api_response(RequestError.not_authenticated)
             if "error" in session:
                 return build_api_response(error_pages.get_error_page(request, session))
             request["session"] = session

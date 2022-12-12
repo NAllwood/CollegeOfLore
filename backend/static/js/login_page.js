@@ -21,14 +21,20 @@ function post(url, payload) {
     console.log("posting")
     console.log(payload)
     console.log("to", url)
-    fetch(url, {
+    let response = fetch(url, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
-    })
-        .then(response => response.json())
-        .then(response => console.log(JSON.stringify(response)))
+    });
+    let content_type = response.headers.get("content-type")
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+        response_json = response.json();
+        console.log(JSON.stringify(response_son));
+    }
+    else if (contentType && contentType.indexOf("text/html") !== -1) {
+        document.write(response.body)
+    }
 }

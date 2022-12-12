@@ -15,7 +15,7 @@
 
 {{ error_msg }}
 
-{% if error == "NO_AUTHCOOKIE" %}
+{% if error_code == 401 %}
 {% include 'login.html' %}
 {% endif %}
 

@@ -16,6 +16,7 @@ class RequestError:
     invalid_signature = {"status": 401, "error": "INVALID_SIGNATURE"}
     invalid_token = {"status": 401, "error": "INVALID_TOKEN"}
 
+    not_authenticated = {"status": 401, "error": "NO_AUTH"}
     no_cookie = {"status": 401, "error": "NO_AUTHCOOKIE"}
     expired_cookie = {"status": 401, "error": "EXPIRED_AUTHCOOKIE"}
 

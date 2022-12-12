@@ -26,7 +26,7 @@ class MongoClient(DBClient):
         app.db_clients[mongo_name] = self
 
     async def store(self, data: dict, **kwargs) -> Optional[ObjectId]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         data.update({"creation_date": datetime.datetime.utcnow()})
         result = await self.db[collection].insert_one(data)
         if result.acknowledged:
@@ -34,18 +34,18 @@ class MongoClient(DBClient):
         return None
 
     async def find(self, filter, *args, **kwargs) -> Optional[dict]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         return await self.db[collection].find_one(filter, *args, **kwargs)
 
     async def find_many(self, filter, *args, **kwargs) -> list:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         documents = []
         async for document in self.db[collection].find(filter, *args, **kwargs):
             documents.append(document)
         return documents
 
     async def delete(self, filter, data, *args, **kwargs) -> Optional[int]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         if kwargs.pop("false_delete", False):
             data.update({"deletion_date": datetime.datetime.utcnow()})
             return await self.update(filter, data, *args, **kwargs)
@@ -56,7 +56,7 @@ class MongoClient(DBClient):
         return None
 
     async def delete_many(self, filter, data, *args, **kwargs) -> Optional[int]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         if kwargs.pop("false_delete", False):
             data.update_many({"deletion_date": datetime.datetime.utcnow()})
             return await self.update(filter, data, *args, **kwargs)
@@ -67,7 +67,7 @@ class MongoClient(DBClient):
         return None
 
     async def update(self, filter, data, *args, **kwargs) -> Optional[int]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         data.update({"last_modified": datetime.datetime.utcnow()})
         result = await self.db[collection].update_one(filter, data, *args, **kwargs)
         if result.acknowledged:
@@ -75,7 +75,7 @@ class MongoClient(DBClient):
         return None
 
     async def update_many(self, filter, data, *args, **kwargs) -> Optional[int]:
-        collection = kwargs.get("coll", self.default_coll)
+        collection = kwargs.pop("coll", self.default_coll)
         data.update({"last_modified": datetime.datetime.utcnow()})
         result = await self.db[collection].update_many(filter, data, *args, **kwargs)
         if result.acknowledged:
