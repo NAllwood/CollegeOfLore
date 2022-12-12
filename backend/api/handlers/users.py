@@ -32,7 +32,7 @@ async def post(request: web.Request) -> web.Response:
         "lores_owned": [],
         "lores_access": [],
     }
-    result = await request.app.db_clients["default"].store(user, coll="users")
+    result = await request.app.db_clients["mongo"].store(user, coll="users")
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 200}
@@ -45,7 +45,7 @@ async def put(request: web.Request) -> web.Response:
         return RequestError.not_found
 
     filter = {"_id": user_id}
-    result = await request.app.db_clients["default"].update(filter, data)
+    result = await request.app.db_clients["mongo"].update(filter, data)
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 200}

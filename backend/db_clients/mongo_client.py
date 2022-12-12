@@ -7,7 +7,7 @@ from typing import Optional
 
 
 class MongoClient(DBClient):
-    """Class wrapping motor asyncio client for abstactred database access.
+    """Class wrapping motor asyncio client for abstracted database access.
     Instances take a single mongo connection specified in the config yml.
     Uses "records" as default collection.
     """
@@ -23,7 +23,7 @@ class MongoClient(DBClient):
         conn_name = "mongo" if mongo_name == "default" else f"mongo_{mongo_name}"
         db_name = app.config["mongodb"][mongo_name]["db"]
         self.db = app[conn_name][db_name]
-        app.db_clients[mongo_name] = self
+        app.db_clients[conn_name] = self
 
     async def store(self, data: dict, **kwargs) -> Optional[ObjectId]:
         collection = kwargs.pop("coll", self.default_coll)
@@ -78,6 +78,14 @@ class MongoClient(DBClient):
         collection = kwargs.pop("coll", self.default_coll)
         data.update({"last_modified": datetime.datetime.utcnow()})
         result = await self.db[collection].update_many(filter, data, *args, **kwargs)
+        if result.acknowledged:
+            return result.modified_count
+        return None
+
+    async def replace(self, filter, data, *args, **kwargs) -> Optional[int]:
+        collection = kwargs.pop("coll", self.default_coll)
+        data.update({"last_modified": datetime.datetime.utcnow()})
+        result = await self.db[collection].replace_one(filter, data, *args, **kwargs)
         if result.acknowledged:
             return result.modified_count
         return None

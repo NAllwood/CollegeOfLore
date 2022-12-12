@@ -14,7 +14,7 @@ from . import mongo
 from backend.api import routes
 from backend.db_clients.mongo_client import MongoClient
 from backend import lang
-from backend.api import middlewares
+from backend.api import middlewares, linker
 
 
 BASE_PATH = os.path.dirname(__file__)
@@ -32,6 +32,7 @@ class Application(web.Application):
         self.add_middlewares()
         routes.register(self)
         setup_logging()
+
         # di.GLOBAL_SCOPE = self
 
     def load_config(self, config):
@@ -55,6 +56,9 @@ class Application(web.Application):
         # creates client wrappers and appends them to app
         # probably needs to happen AFTER enabling underlying db clinets (mongo)
         self.on_startup.append(self.connect_db_clients)
+
+        # automatically inserts html links into records to interlink them
+        self.on_startup.append(linker.link_all)
 
     def setup_attributes(self):
         # needed for local loading of templates, statics, ...

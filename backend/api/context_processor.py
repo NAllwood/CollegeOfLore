@@ -39,7 +39,7 @@ async def get_context(request: web.Request):
     if resource_type in switcher:
         return await switcher[resource_type](request)
 
-    LOG.debug(
+    LOG.info(
         f"Returning empty context because no context processor was found for resource type '{resource_type}'"
     )
     return {}
@@ -64,5 +64,5 @@ async def get_record_context(request: web.Request) -> typing.Optional[dict]:
         filter = {"name_id": record_id}
 
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)
-    record = await request.app.db_clients["default"].find(filter)
+    record = await request.app.db_clients["mongo"].find(filter)
     return record

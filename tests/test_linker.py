@@ -1,7 +1,7 @@
 import pytest
 import yaml
 import os
-from backend import linker
+from backend.api import linker
 from bson import ObjectId
 
 ## Fixtures ##
@@ -139,6 +139,7 @@ def test_get_all_possible_names_from_record(nolen_record, nolen_possible_names):
 @pytest.mark.parametrize(
     "input_text, expected",
     [
+        ("", (None, -1)),
         ("Seine Freunde nannten ihn Nolen.", ("Nolen", 26)),
         (
             "Getauft wurde er Nolen Constantin Lepidus.",
@@ -147,6 +148,10 @@ def test_get_all_possible_names_from_record(nolen_record, nolen_possible_names):
         (
             "Doch Nolen Constantin Lepidus Silverbridge war sein ganzer Name.",
             ("Nolen Constantin Lepidus Silverbridge", 5),
+        ),
+        (
+            'Der <a href="nolen2">Nolen Constantin Lepidus Silverbridge</a> Typ',
+            (None, -1),
         ),
     ],
 )
@@ -194,10 +199,14 @@ def test_recursive_replace_substings_with_links(
             "sometext. One. someothertext",
             'sometext. <a href="one">One</a>. someothertext',
         ),
+        (
+            'some text and <a href="one">One</a> link',
+            'some text and <a href="one">One</a> link',
+        ),
     ],
 )
 def test_replace_text_of_record_person(input, expected, replace_context_person):
-    # text to replace is irrelevant for persons becaus the names are replaced
+    # text to replace is irrelevant for persons because the names are replaced
     replaced = linker.replace_text_with_links_for_records(
         input, "", replace_context_person.get("one")
     )
@@ -214,6 +223,10 @@ def test_replace_text_of_record_person(input, expected, replace_context_person):
         (
             "sometext. Two. someothertext",
             'sometext. <a href="two2">Two</a>. someothertext',
+        ),
+        (
+            'some text and <a href="one">One</a> link',
+            'some text and <a href="one">One</a> link',
         ),
     ],
 )

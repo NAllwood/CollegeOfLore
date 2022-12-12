@@ -21,7 +21,7 @@ async def post(request: web.Request) -> web.Response:
         return error_pages.get_error_page(request, RequestError.malformed_request)
 
     filter = {"name": user_name}
-    user = await request.app.db_clients["default"].find(filter, coll="users")
+    user = await request.app.db_clients["mongo"].find(filter, coll="users")
     if not user:
         LOG.debug("user not found")
         return error_pages.get_error_page(request, RequestError.not_found)
@@ -33,7 +33,6 @@ async def post(request: web.Request) -> web.Response:
     if bcrypt.checkpw(password.encode(), hashed_pw):
         # update user session
         session = await get_session(request)
-        LOG.debug(session)
 
         user_data = {
             "user_id": str(user["_id"]),
@@ -43,8 +42,6 @@ async def post(request: web.Request) -> web.Response:
             "lores_access": user.get("lores_access", []),
         }
         session.update({**user_data})  # "raw_cookie": raw_cookie})
-        LOG.debug("session after update:")
-        LOG.debug(session)
 
         return aiohttp_jinja2.render_template("index.html", request, None)
     else:

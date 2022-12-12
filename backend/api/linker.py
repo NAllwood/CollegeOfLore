@@ -1,9 +1,21 @@
 import logging
+from aiohttp import web
 from posixpath import dirname
 from typing import Any, Iterable, Tuple
 from backend.db_clients.base_client import DBClient
 
 LOG = logging.getLogger(__name__)
+
+
+async def link_all(app: web.Application):
+    db_client = app.db_clients["mongo"]
+    known_records = await get_known_records_map(db_client)
+    records = await db_client.find_many({})  # default coll is records
+    for record in records:
+        record_id = record.pop("_id")
+        filter = {"_id": record_id}
+        record = insert_links(record, known_records)
+        await db_client.replace(filter, record)
 
 
 def purify_name(name: str) -> str:
@@ -48,7 +60,7 @@ async def get_known_records_map(db_client: DBClient) -> dict:
 
 
 def generate_str_from_iterable(it: Iterable):
-    """Generator function that takes any Iterable and yields all (nested) ocurrences of primitive types as str
+    """Generator function that takes any Iterable and yields all (nested) occurrences of primitive types as str
 
     Args:
         it (Iterable): iterable datatype
@@ -119,6 +131,10 @@ def get_longest_matching_substring(text: str, substrings: Iterable) -> Tuple[str
     longest_index = -1
     for subtext in subtexts:
         found_index = text.find(subtext)
+        # do not recursivley link links e.g. <a href="res"><a href="res">Res</a></a>
+        if text[found_index - 2 : found_index] == '">':
+            continue
+
         # if we match something for the first time
         # or we have already matched something, but also match a longer subtext at the same index
         if found_index >= 0 and (longest_index == -1 or longest_index == found_index):
@@ -174,8 +190,13 @@ def replace_text_with_links_for_records(
     """
     # if the type of the found record is not "person", replace found mentions of the existing record with a link
     if replace_context["type"] != "person":
+
+        # avoid recursively inserting links into links by checking if a link already exists
         link = f'<a href="{replace_context["name_id"]}">{replaced_str.capitalize()}</a>'
-        text = original_text.replace(replaced_str, link)
+        LOG.debug("NOTICE ME!!!!!!!!!!!!!!!!!!!!!")
+        print(link, original_text, link in original_text)
+        if link not in original_text:
+            text = original_text.replace(replaced_str, link)
         return text
 
     # if type is person, they can have multiple names that can be replaced by a link
@@ -194,7 +215,7 @@ def insert_links(new_record: dict, records_map: dict) -> dict:
         records_map (dict): a mapping of strings that represent what is identified as a "mention" to general information of the corresponding record
 
     Returns:
-        dict: a record in which all mentionings of other records have been replaced by links
+        dict: a record in which all mentions of other records have been replaced by links
     """
     # we dont want to insert links for the record page we are currently on, so pop that entry from the map
     own_name = purify_name(new_record["name_id"])

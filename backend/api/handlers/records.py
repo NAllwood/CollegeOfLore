@@ -26,11 +26,9 @@ async def get(request: web.Request) -> web.Response:
 async def post(request: web.Request) -> web.Response:
     data = await request.json()
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)
-    known_records = await linker.get_known_records_map(
-        request.app.db_clients["default"]
-    )
+    known_records = await linker.get_known_records_map(request.app.db_clients["mongo"])
     data = linker.insert_links(data, known_records)
-    result = await request.app.db_clients["default"].store(data)
+    result = await request.app.db_clients["mongo"].store(data)
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 201}
@@ -44,11 +42,9 @@ async def put(request: web.Request) -> web.Response:
 
     filter = {"_id": record_id}
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)
-    known_records = await linker.get_known_records_map(
-        request.app.db_clients["default"]
-    )
+    known_records = await linker.get_known_records_map(request.app.db_clients["mongo"])
     data = linker.insert_links(data, known_records)
-    result = await request.app.db_clients["default"].update(filter, data)
+    result = await request.app.db_clients["mongo"].update(filter, data)
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 200}
@@ -62,11 +58,9 @@ async def delete(request: web.Request) -> web.Response:
 
     filter = {"_id": record_id}
     # TODO not "default". read the db client name from the user session (users should be able to select which db they want to use)
-    known_records = await linker.get_known_records_map(
-        request.app.db_clients["default"]
-    )
+    known_records = await linker.get_known_records_map(request.app.db_clients["mongo"])
     data = linker.insert_links(data, known_records)
-    result = await request.app.db_clients["default"].update(filter, data)
+    result = await request.app.db_clients["mongo"].update(filter, data)
     if not result:
         return RequestError.service_unavailable
     return {"data": result, "status": 200}
